@@ -151,9 +151,75 @@ The app offers two powerful evaluation modes:
 ### Additional Features
 - **View Judge Analysis**: See step-by-step reasoning from the AI judge
 - **Copy Improved Prompts**: Instantly copy enhanced versions to your clipboard
-- **Export Results**: Download evaluation data as JSON
+- **Export Results**: Download evaluation data in multiple formats:
+  - **JSON Format**: Complete evaluation data with scores, feedback, and judge analysis
+  - **YAML Format**: Structured as CrewAI agent configuration for direct integration
 - **Track History**: Access your complete evaluation history
 - **Example Prompts**: Learn from high-quality examples across different categories
+
+## 📁 Export Formats
+
+### JSON Export Example
+```json
+{
+  "originalPrompt": "Write a short story about a robot learning to cook.",
+  "evaluation": {
+    "overallScore": 8,
+    "clarityScore": 8,
+    "specificityScore": 7,
+    "taskAlignmentScore": 9,
+    "completenessScore": 8,
+    "feedback": {
+      "clarity": "The prompt clearly communicates the basic intent...",
+      "specificity": "The prompt is quite general and would benefit...",
+      "taskAlignment": "The prompt aligns well with creative writing...",
+      "completeness": "While the basic concept is present..."
+    }
+  },
+  "improvedPrompt": "Write a 500-word short story about a domestic service robot named ARIA...",
+  "improvements": ["Added specific character name", "Defined story length", "..."],
+  "judgeAnalysis": "After analyzing all four evaluations, I selected...",
+  "allEvaluations": [...]
+}
+```
+
+### YAML Export Example (CrewAI Agent Format)
+```yaml
+researcher:
+  role: >
+    Senior Prompt Engineering Researcher for Instructional prompts
+  goal: >
+    Analyze and improve prompt quality with 8/10 overall effectiveness
+  backstory: >
+    You're a seasoned prompt engineering specialist with a talent for evaluating
+    prompt clarity (8/10), specificity (7/10), task alignment (9/10), and completeness (8/10).
+    Known for your ability to identify the most critical improvements
+    and present them in a clear and actionable manner.
+  
+  original_prompt: |
+    Write a short story about a robot learning to cook.
+  
+  improved_prompt: |
+    Write a 500-word short story about a domestic service robot named ARIA 
+    who discovers the art of cooking through trial and error...
+  
+  feedback:
+    clarity: |
+      The prompt clearly communicates the basic intent to create a story...
+    specificity: |
+      The prompt is quite general and would benefit from more specific parameters...
+    task_alignment: |
+      The prompt aligns well with creative writing objectives...
+    completeness: |
+      While the basic concept is present, the prompt lacks important context...
+  
+  key_improvements:
+    - Added specific character name and personality (ARIA)
+    - Defined clear story length requirement (500 words)
+    - Included specific plot elements (mishaps, growth, meaningful meal)
+    - Specified tone and emotional journey requirements
+    - Added sensory description requirements for vivid storytelling
+```
 
 ## 📊 Evaluation Criteria
 

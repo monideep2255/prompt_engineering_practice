@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { 
   TrendingUp, 
   Microscope, 
@@ -15,6 +16,7 @@ import {
   RotateCcw
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
 
 interface EvaluationResultsProps {
   evaluationData: any;
@@ -23,6 +25,7 @@ interface EvaluationResultsProps {
 
 export default function EvaluationResults({ evaluationData, isEvaluating }: EvaluationResultsProps) {
   const { toast } = useToast();
+  const [exportFormat, setExportFormat] = useState("json");
 
   const handleCopyImprovedPrompt = () => {
     if (evaluationData?.improvedPrompt) {
@@ -34,33 +37,86 @@ export default function EvaluationResults({ evaluationData, isEvaluating }: Eval
     }
   };
 
+  const generateYAMLExport = (data: any) => {
+    const yamlContent = `researcher:
+  role: >
+    Senior Prompt Engineering Researcher for ${data.promptType || 'General'} prompts
+  goal: >
+    Analyze and improve prompt quality with ${data.overallScore}/10 overall effectiveness
+  backstory: >
+    You're a seasoned prompt engineering specialist with a talent for evaluating
+    prompt clarity (${data.clarityScore}/10), specificity (${data.specificityScore}/10),
+    task alignment (${data.taskAlignmentScore}/10), and completeness (${data.completenessScore}/10).
+    Known for your ability to identify the most critical improvements
+    and present them in a clear and actionable manner.
+  
+  original_prompt: |
+    ${data.content || evaluationData.originalPrompt || 'N/A'}
+  
+  improved_prompt: |
+    ${data.improvedPrompt}
+  
+  feedback:
+    clarity: |
+      ${data.feedback?.clarity || 'No clarity feedback available'}
+    specificity: |
+      ${data.feedback?.specificity || 'No specificity feedback available'}
+    task_alignment: |
+      ${data.feedback?.taskAlignment || 'No task alignment feedback available'}
+    completeness: |
+      ${data.feedback?.completeness || 'No completeness feedback available'}
+  
+  key_improvements:${data.improvements?.map((imp: string) => `
+    - ${imp}`).join('') || '\n    - No improvements listed'}`;
+    
+    return yamlContent;
+  };
+
+  const generateJSONExport = (data: any) => {
+    return {
+      originalPrompt: data.content || evaluationData.originalPrompt,
+      evaluation: {
+        overallScore: data.overallScore,
+        clarityScore: data.clarityScore,
+        specificityScore: data.specificityScore,
+        taskAlignmentScore: data.taskAlignmentScore,
+        completenessScore: data.completenessScore,
+        feedback: data.feedback,
+      },
+      improvedPrompt: data.improvedPrompt,
+      improvements: data.improvements,
+      judgeAnalysis: data.judgeThinking,
+      allEvaluations: data.allEvaluations,
+    };
+  };
+
   const handleExportResults = () => {
     if (evaluationData) {
-      const exportData = {
-        originalPrompt: evaluationData.content,
-        evaluation: {
-          overallScore: evaluationData.overallScore,
-          clarityScore: evaluationData.clarityScore,
-          specificityScore: evaluationData.specificityScore,
-          taskAlignmentScore: evaluationData.taskAlignmentScore,
-          completenessScore: evaluationData.completenessScore,
-          feedback: evaluationData.feedback,
-        },
-        improvedPrompt: evaluationData.improvedPrompt,
-        improvements: evaluationData.improvements,
-      };
+      let content: string;
+      let mimeType: string;
+      let filename: string;
+
+      if (exportFormat === "yaml") {
+        content = generateYAMLExport(evaluationData);
+        mimeType = 'text/yaml';
+        filename = 'prompt-evaluation.yaml';
+      } else {
+        content = JSON.stringify(generateJSONExport(evaluationData), null, 2);
+        mimeType = 'application/json';
+        filename = 'prompt-evaluation.json';
+      }
       
-      const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+      const blob = new Blob([content], { type: mimeType });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'prompt-evaluation.json';
+      a.download = filename;
       a.click();
       URL.revokeObjectURL(url);
       
       toast({
         title: "Exported!",
-        description: "Evaluation results exported successfully.",
+        description: `Evaluation results exported as ${exportFormat.toUpperCase()}.`,
       });
     }
   };
@@ -293,15 +349,26 @@ export default function EvaluationResults({ evaluationData, isEvaluating }: Eval
                   <Copy className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                   Copy
                 </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleExportResults}
-                  className="text-lab-blue hover:text-lab-blue-light text-xs sm:text-sm"
-                >
-                  <Download className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                  Export
-                </Button>
+                <div className="flex items-center space-x-2">
+                  <Select value={exportFormat} onValueChange={setExportFormat}>
+                    <SelectTrigger className="w-20 h-8 text-xs">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="json">JSON</SelectItem>
+                      <SelectItem value="yaml">YAML</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleExportResults}
+                    className="text-lab-blue hover:text-lab-blue-light text-xs sm:text-sm"
+                  >
+                    <Download className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                    Export
+                  </Button>
+                </div>
               </div>
               <Button 
                 size="sm"
