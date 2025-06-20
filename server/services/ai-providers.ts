@@ -57,6 +57,10 @@ Respond in JSON format with this exact structure:
 
 export class AIProviderService {
   async evaluatePrompt(prompt: string, promptType: string, provider: string): Promise<EvaluationResponse> {
+    if (provider === 'all') {
+      return await this.evaluateWithAllProviders(prompt, promptType);
+    }
+
     const userPrompt = `Evaluate this ${promptType.toLowerCase()} prompt:
 
 "${prompt}"
@@ -99,6 +103,134 @@ Consider the prompt type context when scoring. Provide a thorough evaluation and
     } catch (error) {
       console.error(`Error evaluating prompt with ${provider}:`, error);
       throw new Error(`Failed to evaluate prompt: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
+
+  async evaluateWithAllProviders(prompt: string, promptType: string): Promise<EvaluationResponse & { judgeThinking?: string; allEvaluations?: any[] }> {
+    const userPrompt = `Evaluate this ${promptType.toLowerCase()} prompt:
+
+"${prompt}"
+
+Consider the prompt type context when scoring. Provide a thorough evaluation and an improved version.`;
+
+    const providers = ['openai', 'anthropic', 'grok', 'deepseek', 'google'];
+    const evaluations = [];
+    const errors = [];
+
+    // Get evaluations from all available providers
+    for (const provider of providers) {
+      try {
+        let response: any;
+        switch (provider) {
+          case 'openai':
+            response = await this.evaluateWithOpenAI(userPrompt);
+            break;
+          case 'anthropic':
+            response = await this.evaluateWithAnthropic(userPrompt);
+            break;
+          case 'grok':
+            response = await this.evaluateWithGrok(userPrompt);
+            break;
+          case 'deepseek':
+            response = await this.evaluateWithDeepSeek(userPrompt);
+            break;
+          case 'google':
+            response = await this.evaluateWithGemini(userPrompt);
+            break;
+        }
+        
+        const overallScore = Math.round(
+          (response.clarityScore + response.specificityScore + 
+           response.taskAlignmentScore + response.completenessScore) / 4
+        );
+
+        evaluations.push({
+          provider,
+          evaluation: { ...response, overallScore },
+        });
+      } catch (error) {
+        console.error(`Error with ${provider}:`, error);
+        errors.push(`${provider}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      }
+    }
+
+    if (evaluations.length === 0) {
+      throw new Error(`All providers failed: ${errors.join(', ')}`);
+    }
+
+    // Use OpenAI as judge to select the best evaluation
+    const judgeResult = await this.judgeEvaluations(prompt, promptType, evaluations);
+    
+    return {
+      ...judgeResult.bestEvaluation,
+      judgeThinking: judgeResult.thinking,
+      allEvaluations: evaluations,
+    };
+  }
+
+  private async judgeEvaluations(prompt: string, promptType: string, evaluations: any[]): Promise<{ bestEvaluation: any; thinking: string }> {
+    const judgePrompt = `You are an expert AI evaluation judge. Your task is to analyze multiple AI evaluations of the same prompt and select the best one.
+
+Original Prompt (${promptType}): "${prompt}"
+
+Here are the evaluations from different AI providers:
+
+${evaluations.map((evalItem, index) => `
+=== Evaluation ${index + 1} (${evalItem.provider.toUpperCase()}) ===
+Overall Score: ${evalItem.evaluation.overallScore}/10
+Clarity: ${evalItem.evaluation.clarityScore}/10 - ${evalItem.evaluation.feedback.clarity}
+Specificity: ${evalItem.evaluation.specificityScore}/10 - ${evalItem.evaluation.feedback.specificity}
+Task Alignment: ${evalItem.evaluation.taskAlignmentScore}/10 - ${evalItem.evaluation.feedback.taskAlignment}
+Completeness: ${evalItem.evaluation.completenessScore}/10 - ${evalItem.evaluation.feedback.completeness}
+Improved Prompt: ${evalItem.evaluation.improvedPrompt}
+Improvements: ${evalItem.evaluation.improvements.join(', ')}
+`).join('\n')}
+
+Please:
+1. Analyze each evaluation's quality, accuracy, and helpfulness
+2. Consider which provides the most actionable feedback
+3. Select the best evaluation and explain your reasoning
+4. Respond in JSON format:
+
+{
+  "thinking": "Step-by-step analysis of each evaluation and reasoning for selection",
+  "bestEvaluationIndex": number,
+  "reasoning": "Why this evaluation is the best"
+}`;
+
+    try {
+      const response = await openai.chat.completions.create({
+        model: "gpt-4o",
+        messages: [{ role: "user", content: judgePrompt }],
+        response_format: { type: "json_object" },
+        temperature: 0.3,
+      });
+
+      const content = response.choices[0].message.content;
+      if (!content) throw new Error("No response from judge");
+      
+      const judgeResult = JSON.parse(content);
+      const bestEvaluation = evaluations[judgeResult.bestEvaluationIndex]?.evaluation;
+      
+      if (!bestEvaluation) {
+        throw new Error("Invalid evaluation index from judge");
+      }
+
+      return {
+        bestEvaluation,
+        thinking: judgeResult.thinking,
+      };
+    } catch (error) {
+      console.error("Judge evaluation failed, falling back to highest scored evaluation:", error);
+      // Fallback: return the evaluation with highest overall score
+      const best = evaluations.reduce((prev, current) => 
+        (current.evaluation.overallScore > prev.evaluation.overallScore) ? current : prev
+      );
+      
+      return {
+        bestEvaluation: best.evaluation,
+        thinking: "Judge evaluation failed. Selected the evaluation with the highest overall score as fallback.",
+      };
     }
   }
 

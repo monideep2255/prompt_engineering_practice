@@ -231,6 +231,42 @@ export default function EvaluationResults({ evaluationData, isEvaluating }: Eval
           </CardContent>
         </Card>
 
+        {/* AI Judge Thinking (if available) */}
+        {evaluationData.judgeThinking && (
+          <Card>
+            <CardHeader className="pb-4">
+              <CardTitle className="flex items-center text-lg font-semibold">
+                <TrendingUp className="w-5 h-5 text-lab-blue mr-2" />
+                AI Judge Analysis
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">
+                  {evaluationData.judgeThinking}
+                </p>
+              </div>
+              {evaluationData.allEvaluations && (
+                <div className="mt-4">
+                  <p className="text-sm font-medium text-gray-700 mb-2">
+                    Compared {evaluationData.allEvaluations.length} AI evaluations
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {evaluationData.allEvaluations.map((evalItem: any, index: number) => (
+                      <span 
+                        key={index}
+                        className="px-2 py-1 bg-gray-100 rounded text-xs text-gray-600"
+                      >
+                        {evalItem.provider.toUpperCase()}: {evalItem.evaluation.overallScore}/10
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
+
         {/* Improved Prompt */}
         <Card>
           <CardHeader className="pb-4">

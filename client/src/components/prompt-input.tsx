@@ -25,6 +25,7 @@ const PROMPT_TYPES = [
 ];
 
 const AI_PROVIDERS = [
+  { value: "all", label: "🏆 All Providers + AI Judge" },
   { value: "openai", label: "OpenAI GPT-4" },
   { value: "anthropic", label: "Anthropic Claude" },
   { value: "google", label: "Google Gemini" },
@@ -47,7 +48,7 @@ export default function PromptInput({
 }: PromptInputProps) {
   const [promptContent, setPromptContent] = useState("");
   const [promptType, setPromptType] = useState("Instructional");
-  const [selectedProvider, setSelectedProvider] = useState("openai");
+  const [selectedProvider, setSelectedProvider] = useState("all");
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -192,7 +193,9 @@ export default function PromptInput({
             className="w-full bg-lab-blue hover:bg-lab-blue-light py-3"
           >
             <Wand2 className="w-4 h-4 mr-2" />
-            {evaluateMutation.isPending ? "Evaluating..." : "Evaluate My Prompt"}
+            {evaluateMutation.isPending ? 
+              (selectedProvider === "all" ? "Evaluating with all providers..." : "Evaluating...") : 
+              "Evaluate My Prompt"}
           </Button>
         </CardContent>
       </Card>
