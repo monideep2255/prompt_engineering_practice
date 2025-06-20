@@ -161,6 +161,9 @@ export default function PromptInput({
             </Select>
           </div>
 
+          {/* Task Scenario Component */}
+          <TaskScenario promptType={promptType} />
+
           <div>
             <Label className="text-sm font-medium text-gray-700 mb-2 block">
               Your Prompt
