@@ -1,12 +1,12 @@
-import { useState } from "react";
-import PromptInput from "@/components/prompt-input";
+import { useState, useRef } from "react";
+import PromptInput, { PromptInputRef } from "@/components/prompt-input";
 import EvaluationResults from "@/components/evaluation-results";
 
 export default function Home() {
   const [currentProvider, setCurrentProvider] = useState("OpenAI GPT-4");
   const [evaluationData, setEvaluationData] = useState(null);
   const [isEvaluating, setIsEvaluating] = useState(false);
-  const [promptInputRef, setPromptInputRef] = useState<any>(null);
+  const promptInputRef = useRef<PromptInputRef>(null);
 
   const handleEvaluationComplete = (data: any) => {
     setEvaluationData(data);
@@ -19,16 +19,16 @@ export default function Home() {
   };
 
   const handleUseImprovedPrompt = (prompt: string) => {
-    if (promptInputRef) {
-      promptInputRef.setPromptContent(prompt);
+    if (promptInputRef.current) {
+      promptInputRef.current.setPromptContent(prompt);
     }
   };
 
   const handleLogoClick = () => {
     setEvaluationData(null);
     setIsEvaluating(false);
-    if (promptInputRef) {
-      promptInputRef.clearForm();
+    if (promptInputRef.current) {
+      promptInputRef.current.clearForm();
     }
   };
 
@@ -38,7 +38,10 @@ export default function Home() {
       <header className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-14 sm:h-16">
-            <div className="flex items-center space-x-2 sm:space-x-3">
+            <div 
+              className="flex items-center space-x-2 sm:space-x-3 cursor-pointer"
+              onClick={handleLogoClick}
+            >
               <div className="w-7 h-7 sm:w-8 sm:h-8 bg-lab-blue rounded-lg flex items-center justify-center">
                 <div className="w-3 h-3 sm:w-4 sm:h-4 text-white">
                   <svg viewBox="0 0 20 20" fill="currentColor">
@@ -65,6 +68,7 @@ export default function Home() {
               onEvaluationStart={handleEvaluationStart}
               currentProvider={currentProvider}
               setCurrentProvider={setCurrentProvider}
+              ref={promptInputRef}
             />
           </div>
 
@@ -73,6 +77,7 @@ export default function Home() {
             <EvaluationResults 
               evaluationData={evaluationData}
               isEvaluating={isEvaluating}
+              onUseImprovedPrompt={handleUseImprovedPrompt}
             />
           </div>
         </div>

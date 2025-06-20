@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, forwardRef, useImperativeHandle } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -41,12 +41,17 @@ interface PromptInputProps {
   setCurrentProvider: (provider: string) => void;
 }
 
-export default function PromptInput({ 
+export interface PromptInputRef {
+  setPromptContent: (content: string) => void;
+  clearForm: () => void;
+}
+
+const PromptInput = forwardRef<PromptInputRef, PromptInputProps>(function PromptInput({ 
   onEvaluationComplete, 
   onEvaluationStart,
   currentProvider,
   setCurrentProvider 
-}: PromptInputProps) {
+}, ref) {
   const [promptContent, setPromptContent] = useState("");
   const [promptType, setPromptType] = useState("creative-writing");
   const [selectedProvider, setSelectedProvider] = useState("all-openai");
@@ -54,6 +59,19 @@ export default function PromptInput({
   const [currentStep, setCurrentStep] = useState("");
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  // Expose methods to parent component
+  useImperativeHandle(ref, () => ({
+    setPromptContent: (content: string) => {
+      setPromptContent(content);
+    },
+    clearForm: () => {
+      setPromptContent("");
+      setPromptType("creative-writing");
+      setEvaluationProgress([]);
+      setCurrentStep("");
+    }
+  }));
 
 
 
@@ -255,4 +273,8 @@ export default function PromptInput({
 
     </div>
   );
-}
+});
+
+PromptInput.displayName = "PromptInput";
+
+export default PromptInput;
