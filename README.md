@@ -135,11 +135,16 @@ The app offers two powerful evaluation modes:
 
 ### Multi-LLM Evaluation with AI Judge
 1. Write your prompt in the input field
-2. Select "🏆 4 LLM Evaluation + OpenAI Judge"
+2. Select from 5 judge options:
+   - "🏆 4 LLM Evaluation + OpenAI Judge"
+   - "🧠 4 LLM Evaluation + Anthropic Judge"
+   - "🌟 4 LLM Evaluation + Google Judge"
+   - "⚡ 4 LLM Evaluation + DeepSeek Judge"
+   - "🚀 4 LLM Evaluation + Grok Judge"
 3. Click "Evaluate My Prompt" - the system will:
    - Send your prompt to 4 different LLMs (Anthropic, Google, Grok, DeepSeek)
    - Collect all evaluations with scores and feedback
-   - Use OpenAI GPT-4 as an expert judge to analyze all evaluations
+   - Use your chosen AI as an expert judge to analyze all evaluations
    - Present the best evaluation with detailed reasoning
    - Show comparison scores from all providers
 

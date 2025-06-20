@@ -59,3 +59,10 @@ export const evaluationResponseSchema = z.object({
 });
 
 export type EvaluationResponse = z.infer<typeof evaluationResponseSchema>;
+
+// Evaluation request schema
+export const evaluatePromptSchema = z.object({
+  content: z.string().min(1, "Prompt content is required"),
+  promptType: z.string().min(1, "Prompt type is required"),
+  aiProvider: z.enum(["all-openai", "all-anthropic", "all-google", "all-deepseek", "all-grok"]),
+});
