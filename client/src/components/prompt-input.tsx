@@ -17,12 +17,12 @@ import TaskScenario from "./task-scenario";
 import { Edit, Lightbulb, Trash2, Wand2 } from "lucide-react";
 
 const PROMPT_TYPES = [
-  "Instructional",
-  "Creative Writing", 
-  "System Prompt",
-  "Few-shot Learning",
-  "Summarization",
-  "Analysis",
+  { label: "Creative Writing", value: "creative-writing" },
+  { label: "Instructional", value: "instructional" }, 
+  { label: "Summarization", value: "summarization" },
+  { label: "Code Generation", value: "code-generation" },
+  { label: "Data Analysis", value: "data-analysis" },
+  { label: "Analysis", value: "analysis" },
 ];
 
 const AI_PROVIDERS = [
@@ -47,15 +47,12 @@ export default function PromptInput({
   setCurrentProvider 
 }: PromptInputProps) {
   const [promptContent, setPromptContent] = useState("");
-  const [promptType, setPromptType] = useState("Instructional");
+  const [promptType, setPromptType] = useState("creative-writing");
   const [selectedProvider, setSelectedProvider] = useState("all-openai");
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Fetch example prompts
-  const { data: examplePrompts = [] } = useQuery<any[]>({
-    queryKey: ["/api/example-prompts"],
-  });
+
 
   // Evaluate prompt mutation
   const evaluateMutation = useMutation({
@@ -153,8 +150,8 @@ export default function PromptInput({
               </SelectTrigger>
               <SelectContent>
                 {PROMPT_TYPES.map((type) => (
-                  <SelectItem key={type} value={type}>
-                    {type}
+                  <SelectItem key={type.value} value={type.value}>
+                    {type.label}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -203,38 +200,7 @@ export default function PromptInput({
         </CardContent>
       </Card>
 
-      {/* Example Prompts Section */}
-      <Card>
-        <CardHeader className="pb-4">
-          <CardTitle className="flex items-center text-lg font-semibold">
-            <Lightbulb className="w-5 h-5 text-lab-warning mr-2" />
-            Example Prompts
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            {examplePrompts.map((example: any) => (
-              <div
-                key={example.id}
-                className="bg-gray-50 rounded-lg p-4 cursor-pointer hover:bg-gray-100 transition-colors"
-                onClick={() => handleLoadExample(example.content)}
-              >
-                <div className="flex justify-between items-start mb-2">
-                  <span className="text-sm font-medium text-lab-blue">
-                    {example.promptType}
-                  </span>
-                  <span className="text-xs text-lab-gray">
-                    Score: {example.score}/10
-                  </span>
-                </div>
-                <p className="text-sm text-gray-700 line-clamp-3">
-                  {example.content}
-                </p>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+
     </div>
   );
 }
