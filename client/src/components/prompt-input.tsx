@@ -49,6 +49,8 @@ export default function PromptInput({
   const [promptContent, setPromptContent] = useState("");
   const [promptType, setPromptType] = useState("creative-writing");
   const [selectedProvider, setSelectedProvider] = useState("all-openai");
+  const [evaluationProgress, setEvaluationProgress] = useState<string[]>([]);
+  const [currentStep, setCurrentStep] = useState("");
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -57,10 +59,34 @@ export default function PromptInput({
   // Evaluate prompt mutation
   const evaluateMutation = useMutation({
     mutationFn: async (data: { content: string; promptType: string; aiProvider: string }) => {
+      // Reset progress tracking
+      setEvaluationProgress([]);
+      setCurrentStep("");
+      
+      // Show progress steps for multi-LLM evaluation
+      if (data.aiProvider.startsWith("all-")) {
+        const judgeProvider = data.aiProvider.replace("all-", "");
+        const steps = [
+          "Getting evaluation from DeepSeek...",
+          "Getting evaluation from Groq...", 
+          "Getting evaluation from Google...",
+          "Getting evaluation from Anthropic...",
+          `Sending all evaluations to ${judgeProvider.charAt(0).toUpperCase() + judgeProvider.slice(1)} judge to pick the best evaluation...`
+        ];
+        
+        // Simulate progress steps
+        for (let i = 0; i < steps.length; i++) {
+          setCurrentStep(steps[i]);
+          setEvaluationProgress(prev => [...prev, steps[i]]);
+          await new Promise(resolve => setTimeout(resolve, 800)); // Small delay between steps
+        }
+      }
+      
       const response = await apiRequest("POST", "/api/evaluate-prompt", data);
       return response.json();
     },
     onSuccess: (data) => {
+      setCurrentStep("Evaluation complete!");
       onEvaluationComplete(data);
       // Invalidate history to refresh it
       queryClient.invalidateQueries({ queryKey: ["/api/prompts"] });
@@ -68,8 +94,15 @@ export default function PromptInput({
         title: "Evaluation Complete",
         description: `Your prompt scored ${data.overallScore}/10 overall.`,
       });
+      // Clear progress after success
+      setTimeout(() => {
+        setEvaluationProgress([]);
+        setCurrentStep("");
+      }, 2000);
     },
     onError: (error: Error) => {
+      setCurrentStep("");
+      setEvaluationProgress([]);
       toast({
         title: "Evaluation Failed",
         description: error.message,
@@ -184,6 +217,27 @@ export default function PromptInput({
               </Button>
             </div>
           </div>
+
+          {/* Progress Display */}
+          {evaluateMutation.isPending && evaluationProgress.length > 0 && (
+            <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <h4 className="font-semibold text-blue-900 mb-2">Evaluation Progress</h4>
+              <div className="space-y-2">
+                {evaluationProgress.map((step, index) => (
+                  <div key={index} className="flex items-center text-sm">
+                    <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                    <span className="text-blue-800">{step}</span>
+                  </div>
+                ))}
+                {currentStep && (
+                  <div className="flex items-center text-sm">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full mr-2 animate-pulse"></div>
+                    <span className="text-blue-900 font-medium">{currentStep}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
 
           <Button
             onClick={handleEvaluate}

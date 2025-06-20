@@ -17,15 +17,16 @@ export default function TaskScenario({ promptType }: TaskScenarioProps) {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   const { data: scenario, isLoading, error } = useQuery<TaskScenarioData>({
-    queryKey: ['/api/task-scenario', promptType, refreshTrigger],
-    enabled: !!promptType && promptType !== "",
+    queryKey: [`/api/task-scenario/${promptType}`, refreshTrigger],
+    enabled: !!promptType,
   });
 
   const handleNewScenario = () => {
     setRefreshTrigger(prev => prev + 1);
   };
 
-  if (!promptType || promptType === "") {
+  // Always show the component when promptType is provided
+  if (!promptType) {
     return null;
   }
 
