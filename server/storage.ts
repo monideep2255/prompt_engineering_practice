@@ -48,26 +48,7 @@ export class MemStorage implements IStorage {
     });
   }
 
-  async createPrompt(insertPrompt: InsertPrompt): Promise<Prompt> {
-    const id = this.currentPromptId++;
-    const prompt: Prompt = {
-      ...insertPrompt,
-      id,
-      createdAt: new Date(),
-    };
-    this.prompts.set(id, prompt);
-    return prompt;
-  }
 
-  async getPromptsByDate(limit: number = 10): Promise<Prompt[]> {
-    return Array.from(this.prompts.values())
-      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
-      .slice(0, limit);
-  }
-
-  async getPromptById(id: number): Promise<Prompt | undefined> {
-    return this.prompts.get(id);
-  }
 
   async createExamplePrompt(insertExamplePrompt: InsertExamplePrompt): Promise<ExamplePrompt> {
     const id = this.currentExampleId++;
