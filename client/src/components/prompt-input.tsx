@@ -25,12 +25,11 @@ const PROMPT_TYPES = [
 ];
 
 const AI_PROVIDERS = [
-  { value: "all", label: "🏆 4 LLM Evaluation + OpenAI Judge" },
-  { value: "openai", label: "OpenAI GPT-4" },
-  { value: "anthropic", label: "Anthropic Claude" },
-  { value: "google", label: "Google Gemini" },
-  { value: "deepseek", label: "DeepSeek" },
-  { value: "grok", label: "Grok" },
+  { value: "all-openai", label: "🏆 4 LLM Evaluation + OpenAI Judge" },
+  { value: "all-anthropic", label: "🧠 4 LLM Evaluation + Anthropic Judge" },
+  { value: "all-google", label: "🌟 4 LLM Evaluation + Google Judge" },
+  { value: "all-deepseek", label: "⚡ 4 LLM Evaluation + DeepSeek Judge" },
+  { value: "all-grok", label: "🚀 4 LLM Evaluation + Grok Judge" },
 ];
 
 interface PromptInputProps {
@@ -48,7 +47,7 @@ export default function PromptInput({
 }: PromptInputProps) {
   const [promptContent, setPromptContent] = useState("");
   const [promptType, setPromptType] = useState("Instructional");
-  const [selectedProvider, setSelectedProvider] = useState("all");
+  const [selectedProvider, setSelectedProvider] = useState("all-openai");
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -194,7 +193,7 @@ export default function PromptInput({
           >
             <Wand2 className="w-4 h-4 mr-2" />
             {evaluateMutation.isPending ? 
-              (selectedProvider === "all" ? "Evaluating with 4 LLMs + OpenAI Judge..." : "Evaluating...") : 
+              (selectedProvider.startsWith("all-") ? "Evaluating with 4 LLMs + AI Judge..." : "Evaluating...") : 
               "Evaluate My Prompt"}
           </Button>
         </CardContent>

@@ -106,7 +106,7 @@ Consider the prompt type context when scoring. Provide a thorough evaluation and
     }
   }
 
-  async evaluateWithAllProviders(prompt: string, promptType: string): Promise<EvaluationResponse & { judgeThinking?: string; allEvaluations?: any[] }> {
+  async evaluateWithAllProviders(prompt: string, promptType: string, judgeProvider: string = 'openai'): Promise<EvaluationResponse & { judgeThinking?: string; allEvaluations?: any[] }> {
     const userPrompt = `Evaluate this ${promptType.toLowerCase()} prompt:
 
 "${prompt}"
@@ -155,8 +155,8 @@ Consider the prompt type context when scoring. Provide a thorough evaluation and
       throw new Error(`All providers failed: ${errors.join(', ')}`);
     }
 
-    // Use OpenAI as judge to select the best evaluation
-    const judgeResult = await this.judgeEvaluations(prompt, promptType, evaluations);
+    // Use specified provider as judge to select the best evaluation
+    const judgeResult = await this.judgeEvaluations(prompt, promptType, evaluations, judgeProvider);
     
     return {
       ...judgeResult.bestEvaluation,
@@ -165,7 +165,7 @@ Consider the prompt type context when scoring. Provide a thorough evaluation and
     };
   }
 
-  private async judgeEvaluations(prompt: string, promptType: string, evaluations: any[]): Promise<{ bestEvaluation: any; thinking: string }> {
+  private async judgeEvaluations(prompt: string, promptType: string, evaluations: any[], judgeProvider: string = 'openai'): Promise<{ bestEvaluation: any; thinking: string }> {
     const judgePrompt = `You are an expert AI evaluation judge. Your task is to analyze multiple AI evaluations of the same prompt and select the best one.
 
 Original Prompt (${promptType}): "${prompt}"
@@ -196,12 +196,60 @@ Please:
 }`;
 
     try {
-      const response = await openai.chat.completions.create({
-        model: "gpt-4o",
-        messages: [{ role: "user", content: judgePrompt }],
-        response_format: { type: "json_object" },
-        temperature: 0.3,
-      });
+      let response;
+      
+      switch (judgeProvider) {
+        case 'openai':
+          response = await openai.chat.completions.create({
+            model: "gpt-4o",
+            messages: [{ role: "user", content: judgePrompt }],
+            response_format: { type: "json_object" },
+            temperature: 0.3,
+          });
+          break;
+          
+        case 'anthropic':
+          const anthropicResponse = await anthropic.messages.create({
+            model: 'claude-sonnet-4-20250514',
+            max_tokens: 1024,
+            temperature: 0.3,
+            system: 'You are an expert AI evaluation judge. Respond only in valid JSON format.',
+            messages: [{ role: 'user', content: judgePrompt }],
+          });
+          response = { choices: [{ message: { content: anthropicResponse.content[0].text } }] };
+          break;
+          
+        case 'google':
+          const googleResponse = await gemini.generateContent({
+            contents: [{ role: 'user', parts: [{ text: judgePrompt }] }],
+            generationConfig: { temperature: 0.3 },
+          });
+          response = { choices: [{ message: { content: googleResponse.response.text() } }] };
+          break;
+          
+        case 'grok':
+          const grokResponse = await grok.chat.completions.create({
+            model: "grok-2-1212",
+            messages: [{ role: "user", content: judgePrompt }],
+            response_format: { type: "json_object" },
+            temperature: 0.3,
+          });
+          response = grokResponse;
+          break;
+          
+        case 'deepseek':
+          const deepseekResponse = await deepseek.chat.completions.create({
+            model: "deepseek-chat",
+            messages: [{ role: "user", content: judgePrompt }],
+            response_format: { type: "json_object" },
+            temperature: 0.3,
+          });
+          response = deepseekResponse;
+          break;
+          
+        default:
+          throw new Error(`Unknown judge provider: ${judgeProvider}`);
+      }
 
       const content = response.choices[0].message.content;
       if (!content) throw new Error("No response from judge");
