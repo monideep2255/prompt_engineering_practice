@@ -282,32 +282,32 @@ export default function EvaluationResults({ evaluationData, isEvaluating }: Eval
               </p>
             </div>
             
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <div className="flex items-center space-x-2 sm:space-x-4">
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={handleCopyImprovedPrompt}
-                  className="text-lab-blue hover:text-lab-blue-light"
+                  className="text-lab-blue hover:text-lab-blue-light text-xs sm:text-sm"
                 >
-                  <Copy className="w-4 h-4 mr-2" />
+                  <Copy className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                   Copy
                 </Button>
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={handleExportResults}
-                  className="text-lab-blue hover:text-lab-blue-light"
+                  className="text-lab-blue hover:text-lab-blue-light text-xs sm:text-sm"
                 >
-                  <Download className="w-4 h-4 mr-2" />
+                  <Download className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                   Export
                 </Button>
               </div>
               <Button 
                 size="sm"
-                className="bg-lab-blue hover:bg-lab-blue-light"
+                className="bg-lab-blue hover:bg-lab-blue-light text-xs sm:text-sm"
               >
-                <RotateCcw className="w-4 h-4 mr-2" />
+                <RotateCcw className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                 Use This Version
               </Button>
             </div>

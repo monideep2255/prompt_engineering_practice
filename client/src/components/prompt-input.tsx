@@ -125,10 +125,10 @@ export default function PromptInput({
               <Edit className="w-5 h-5 text-lab-blue mr-2" />
               Write Your Prompt
             </CardTitle>
-            <div className="flex items-center space-x-2">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
               <Label className="text-sm text-lab-gray">Provider:</Label>
               <Select value={selectedProvider} onValueChange={handleProviderChange}>
-                <SelectTrigger className="w-[140px] h-8">
+                <SelectTrigger className="w-full sm:w-[200px] h-8 text-xs sm:text-sm">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
