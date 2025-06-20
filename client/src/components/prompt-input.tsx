@@ -13,6 +13,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import TaskScenario from "./task-scenario";
 import { Edit, Lightbulb, Trash2, Wand2 } from "lucide-react";
 
 const PROMPT_TYPES = [

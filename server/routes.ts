@@ -57,7 +57,16 @@ export function registerRoutes(app: Express): void {
     }
   });
 
-
-
+  // Get random task scenario for prompt practice
+  app.get("/api/task-scenario/:promptType", async (req, res) => {
+    try {
+      const { promptType } = req.params;
+      const scenario = await storage.getRandomTaskScenario(promptType);
+      res.json(scenario);
+    } catch (error) {
+      console.error('Error fetching task scenario:', error);
+      res.status(500).json({ message: 'Failed to fetch task scenario' });
+    }
+  });
 
 }

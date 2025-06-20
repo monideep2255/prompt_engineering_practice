@@ -33,6 +33,17 @@ export const handler: Handler = async (event: HandlerEvent, context: HandlerCont
       };
     }
     
+    // GET /api/task-scenario/:promptType
+    if (path.startsWith('/api/task-scenario/') && httpMethod === 'GET') {
+      const promptType = path.split('/api/task-scenario/')[1];
+      const scenario = await storage.getRandomTaskScenario(promptType);
+      return {
+        statusCode: 200,
+        headers: corsHeaders,
+        body: JSON.stringify(scenario),
+      };
+    }
+    
     // POST /api/evaluate-prompt
     if (path === '/api/evaluate-prompt' && httpMethod === 'POST') {
       if (!body) {
