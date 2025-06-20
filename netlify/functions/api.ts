@@ -5,8 +5,18 @@ import { aiProviderService } from '../../server/services/ai-providers';
 export const handler: Handler = async (event: HandlerEvent, context: HandlerContext): Promise<HandlerResponse> => {
   const { path, httpMethod, headers, body, queryStringParameters } = event;
   
-  // Get the actual API path from query parameters or path
-  const apiPath = queryStringParameters?.path || path;
+  console.log('Netlify function called:', { path, httpMethod, queryStringParameters });
+  
+  // Extract the API path - Netlify passes the original path in headers
+  const originalPath = headers['x-forwarded-path'] || path;
+  let apiPath = '';
+  
+  if (originalPath.startsWith('/api/')) {
+    apiPath = originalPath.substring(5); // Remove /api/ prefix
+  } else {
+    // Fallback: try to extract from path
+    apiPath = path.replace('/.netlify/functions/api', '').replace(/^\//, '');
+  }
   
   // CORS headers
   const corsHeaders = {
@@ -26,6 +36,8 @@ export const handler: Handler = async (event: HandlerEvent, context: HandlerCont
   }
 
   try {
+    console.log('Processing API path:', apiPath);
+    
     // GET /example-prompts
     if (apiPath === 'example-prompts' && httpMethod === 'GET') {
       const examples = await storage.getExamplePrompts();
