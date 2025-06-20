@@ -34,7 +34,11 @@ Prompt engineering is rapidly becoming a key skill in leveraging AI effectively.
   - **Grok Judge**: Unique perspective and evaluation style
 - **Judge Analysis Display**: See step-by-step thinking from any AI judge explaining why one evaluation was chosen over others
 - **Export Functionality**: Export evaluations in JSON format or YAML format structured for CrewAI agents
-- **Example Prompts**: Learn from high-quality example prompts across different categories
+- **🎯 Randomizer Task Scenarios**: Revolutionary feature that provides real-world context for prompt practice:
+  - **Contextual Practice**: Get specific scenarios like "You're working with a publisher who wants a detective story set in 1920s Chicago"
+  - **Dynamic Task Generation**: Fresh scenarios for each prompt type (Creative Writing, Data Analysis, Code Generation, etc.)
+  - **Real-world Context**: Practice with authentic business scenarios instead of generic prompts
+  - **One-click Refresh**: Generate new scenarios instantly to keep practice sessions engaging
 - **Fully Responsive Design**: Optimized interface that works seamlessly across mobile, tablet, and desktop devices
 - **Netlify Deployment**: Configured for automatic deployment with serverless functions
 

@@ -100,9 +100,7 @@ export default function PromptInput({
     setPromptContent("");
   };
 
-  const handleLoadExample = (exampleContent: string) => {
-    setPromptContent(exampleContent);
-  };
+
 
   const handleProviderChange = (value: string) => {
     setSelectedProvider(value);
