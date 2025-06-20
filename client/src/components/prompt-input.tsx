@@ -53,7 +53,7 @@ export default function PromptInput({
   const queryClient = useQueryClient();
 
   // Fetch example prompts
-  const { data: examplePrompts = [] } = useQuery({
+  const { data: examplePrompts = [] } = useQuery<any[]>({
     queryKey: ["/api/example-prompts"],
   });
 
