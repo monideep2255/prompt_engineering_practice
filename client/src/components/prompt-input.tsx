@@ -27,6 +27,7 @@ const PROMPT_TYPES = [
 const AI_PROVIDERS = [
   { value: "openai", label: "OpenAI GPT-4" },
   { value: "anthropic", label: "Anthropic Claude" },
+  { value: "google", label: "Google Gemini" },
   { value: "deepseek", label: "DeepSeek" },
   { value: "grok", label: "Grok" },
 ];

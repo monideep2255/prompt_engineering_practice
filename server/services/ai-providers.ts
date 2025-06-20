@@ -1,5 +1,6 @@
 import OpenAI from "openai";
 import Anthropic from '@anthropic-ai/sdk';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import { EvaluationResponse } from "@shared/schema";
 
 // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
@@ -14,13 +15,15 @@ const anthropic = new Anthropic({
 
 const grokAI = new OpenAI({ 
   baseURL: "https://api.x.ai/v1", 
-  apiKey: process.env.XAI_API_KEY || process.env.VITE_XAI_API_KEY || ""
+  apiKey: process.env.GROQ_API_KEY || process.env.VITE_GROQ_API_KEY || ""
 });
 
 const deepseekAI = new OpenAI({
   baseURL: "https://api.deepseek.com",
   apiKey: process.env.DEEPSEEK_API_KEY || process.env.VITE_DEEPSEEK_API_KEY || ""
 });
+
+const geminiAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY || "");
 
 const SYSTEM_PROMPT = `You are a Prompt Evaluation Agent specialized in analyzing and improving user prompts for AI interactions. Your task is to evaluate prompts across four key criteria and provide actionable improvement suggestions.
 
@@ -75,6 +78,9 @@ Consider the prompt type context when scoring. Provide a thorough evaluation and
           break;
         case 'deepseek':
           response = await this.evaluateWithDeepSeek(userPrompt);
+          break;
+        case 'google':
+          response = await this.evaluateWithGemini(userPrompt);
           break;
         default:
           throw new Error(`Unsupported AI provider: ${provider}`);
@@ -168,6 +174,29 @@ Consider the prompt type context when scoring. Provide a thorough evaluation and
         return JSON.parse(jsonMatch[0]);
       }
       throw new Error("Could not parse JSON response from DeepSeek");
+    }
+  }
+
+  private async evaluateWithGemini(userPrompt: string): Promise<Omit<EvaluationResponse, 'overallScore'>> {
+    const model = geminiAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+
+    const prompt = `${SYSTEM_PROMPT}\n\n${userPrompt}`;
+
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const content = response.text();
+
+    if (!content) throw new Error("No response from Google Gemini");
+
+    try {
+      return JSON.parse(content);
+    } catch {
+      // Fallback: try to extract JSON from the response
+      const jsonMatch = content.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        return JSON.parse(jsonMatch[0]);
+      }
+      throw new Error("Could not parse JSON response from Google Gemini");
     }
   }
 }
