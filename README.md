@@ -33,9 +33,10 @@ Prompt engineering is rapidly becoming a key skill in leveraging AI effectively.
   - **DeepSeek Judge**: Efficient and insightful analysis
   - **Grok Judge**: Unique perspective and evaluation style
 - **Judge Analysis Display**: See step-by-step thinking from any AI judge explaining why one evaluation was chosen over others
-- **Prompt History**: Track your evaluation history and progress over time
+- **Export Functionality**: Export evaluations in JSON format or YAML format structured for CrewAI agents
 - **Example Prompts**: Learn from high-quality example prompts across different categories
 - **Fully Responsive Design**: Optimized interface that works seamlessly across mobile, tablet, and desktop devices
+- **Netlify Deployment**: Configured for automatic deployment with serverless functions
 
 ### 🔄 Phase 2: Prompt Types & Style Modes (UPCOMING)
 
