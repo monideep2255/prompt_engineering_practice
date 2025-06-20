@@ -149,13 +149,61 @@ export default function EvaluationResults({ evaluationData, isEvaluating }: Eval
   if (evaluationData) {
     return (
       <div className="space-y-6">
+        {/* Evaluation Progress */}
+        {evaluationData.allEvaluations && (
+          <Card>
+            <CardHeader className="pb-4">
+              <CardTitle className="flex items-center text-lg font-semibold">
+                <Microscope className="w-5 h-5 text-lab-blue mr-2" />
+                Evaluation Process
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {/* LLM Evaluations */}
+                <div className="space-y-3">
+                  <h4 className="text-sm font-medium text-gray-700">LLM Evaluations:</h4>
+                  {evaluationData.allEvaluations.map((evalItem: any, index: number) => (
+                    <div key={index} className="border border-gray-200 rounded-lg p-3">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-medium text-sm uppercase text-lab-blue">
+                          {evalItem.provider}
+                        </span>
+                        <span className="text-sm font-semibold">
+                          {evalItem.evaluation.overallScore}/10
+                        </span>
+                      </div>
+                      <p className="text-xs text-gray-600 italic">
+                        {evalItem.thinking || `${evalItem.provider.toUpperCase()} completed evaluation`}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Judge Decision */}
+                {evaluationData.judgeThinking && (
+                  <div className="border-t pt-4">
+                    <h4 className="text-sm font-medium text-gray-700 mb-2">AI Judge Decision:</h4>
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                      <p className="text-xs text-blue-800">
+                        {evaluationData.judgeThinking.substring(0, 200)}
+                        {evaluationData.judgeThinking.length > 200 ? '...' : ''}
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Overall Score */}
         <Card>
           <CardHeader className="pb-4">
             <div className="flex items-center justify-between">
               <CardTitle className="flex items-center text-lg font-semibold">
                 <TrendingUp className="w-5 h-5 text-lab-success mr-2" />
-                Evaluation Results
+                Final Results
               </CardTitle>
               <div className="flex items-center space-x-2">
                 <span className={`text-2xl font-bold ${getScoreColor(evaluationData.overallScore)}`}>

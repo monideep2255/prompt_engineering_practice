@@ -26,11 +26,12 @@ const PROMPT_TYPES = [
 ];
 
 const AI_PROVIDERS = [
-  { value: "all-openai", label: "🏆 4 LLM Evaluation + OpenAI Judge" },
-  { value: "all-anthropic", label: "🧠 4 LLM Evaluation + Anthropic Judge" },
-  { value: "all-google", label: "🌟 4 LLM Evaluation + Google Judge" },
-  { value: "all-deepseek", label: "⚡ 4 LLM Evaluation + DeepSeek Judge" },
-  { value: "all-grok", label: "🚀 4 LLM Evaluation + Grok Judge" },
+  { value: "all-openai", label: "🏆 2 LLM Evaluation + OpenAI Judge" },
+  { value: "all-anthropic", label: "🧠 2 LLM Evaluation + Anthropic Judge" },
+  { value: "all-deepseek", label: "⚡ 2 LLM Evaluation + DeepSeek Judge" },
+  // Commented out for future use:
+  // { value: "all-google", label: "🌟 2 LLM Evaluation + Google Judge" },
+  // { value: "all-grok", label: "🚀 2 LLM Evaluation + Grok Judge" },
 ];
 
 interface PromptInputProps {
@@ -67,15 +68,13 @@ export default function PromptInput({
       if (data.aiProvider.startsWith("all-")) {
         const judgeProvider = data.aiProvider.replace("all-", "");
         const steps = [
-          "🤖 Getting evaluation from DeepSeek - analyzing clarity, specificity, and task alignment...",
-          "⚡ Getting evaluation from Groq - evaluating completeness and overall effectiveness...", 
-          "🌟 Getting evaluation from Google - assessing prompt structure and coherence...",
-          "🧠 Getting evaluation from Anthropic - reviewing language precision and context...",
-          `🏆 Sending all 4 evaluations to ${judgeProvider.charAt(0).toUpperCase() + judgeProvider.slice(1)} judge to analyze and select the best evaluation for your ${data.promptType} task...`
+          "🧠 Anthropic analyzing prompt - focusing on structure and clarity patterns...",
+          "🤖 DeepSeek evaluating prompt - emphasizing technical precision and completeness...",
+          `🏆 ${judgeProvider.charAt(0).toUpperCase() + judgeProvider.slice(1)} judge comparing both evaluations and selecting the most comprehensive analysis for your ${data.promptType} task...`
         ];
         
         // Simulate progress steps with varied timing
-        const delays = [1000, 1200, 900, 1100, 1500]; // Varied delays for realistic feel
+        const delays = [1200, 1400, 1800]; // Realistic timing for 2 LLM + judge
         for (let i = 0; i < steps.length; i++) {
           setCurrentStep(steps[i]);
           setEvaluationProgress(prev => [...prev, steps[i]]);

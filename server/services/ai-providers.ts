@@ -125,19 +125,25 @@ Consider the prompt type context when scoring. Provide a thorough evaluation and
     for (const provider of providers) {
       try {
         let response: any;
+        let thinking: string = '';
+        
         switch (provider) {
           case 'anthropic':
             response = await this.evaluateWithAnthropic(userPrompt);
+            thinking = response.reasoning || `${provider.toUpperCase()} evaluated the prompt focusing on structure and clarity`;
             break;
           case 'deepseek':
             response = await this.evaluateWithDeepSeek(userPrompt);
+            thinking = response.reasoning || `${provider.toUpperCase()} analyzed the prompt with emphasis on technical precision`;
             break;
           // Commented out for future use:
           // case 'grok':
           //   response = await this.evaluateWithGrok(userPrompt);
+          //   thinking = response.reasoning || `${provider.toUpperCase()} reviewed the prompt with creative insight`;
           //   break;
           // case 'google':
           //   response = await this.evaluateWithGemini(userPrompt);
+          //   thinking = response.reasoning || `${provider.toUpperCase()} assessed the prompt comprehensively`;
           //   break;
         }
         
@@ -148,6 +154,7 @@ Consider the prompt type context when scoring. Provide a thorough evaluation and
 
         evaluations.push({
           provider,
+          thinking: thinking.substring(0, 120) + (thinking.length > 120 ? '...' : ''), // Limit to ~1 line
           evaluation: { ...response, overallScore },
         });
       } catch (error) {
