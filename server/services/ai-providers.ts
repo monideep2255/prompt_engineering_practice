@@ -130,11 +130,11 @@ Consider the prompt type context when scoring. Provide a thorough evaluation and
         switch (provider) {
           case 'anthropic':
             response = await this.evaluateWithAnthropic(userPrompt);
-            thinking = response.reasoning || `${provider.toUpperCase()} evaluated the prompt focusing on structure and clarity`;
+            thinking = response.reasoning || `Analyzed prompt structure, clarity, and contextual appropriateness for ${promptType}`;
             break;
           case 'deepseek':
             response = await this.evaluateWithDeepSeek(userPrompt);
-            thinking = response.reasoning || `${provider.toUpperCase()} analyzed the prompt with emphasis on technical precision`;
+            thinking = `Evaluated technical precision, completeness, and logical flow for ${promptType} task`;
             break;
           // Commented out for future use:
           // case 'grok':
@@ -157,6 +157,8 @@ Consider the prompt type context when scoring. Provide a thorough evaluation and
           thinking: thinking.substring(0, 120) + (thinking.length > 120 ? '...' : ''), // Limit to ~1 line
           evaluation: { ...response, overallScore },
         });
+        
+        console.log(`${provider.toUpperCase()} evaluation complete - Score: ${overallScore}/10, Thinking: ${thinking.substring(0, 50)}...`);
       } catch (error) {
         console.error(`Error with ${provider}:`, error);
         errors.push(`${provider}: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -320,7 +322,31 @@ Please:
     const content = response.content[0];
     if (content.type !== 'text') throw new Error("Unexpected response type from Anthropic");
     
-    return JSON.parse(content.text);
+    // Clean up the response to extract JSON
+    let cleanedText = content.text.trim();
+    
+    // Remove markdown code blocks if present
+    if (cleanedText.includes('```json')) {
+      const match = cleanedText.match(/```json\s*([\s\S]*?)\s*```/);
+      if (match) {
+        cleanedText = match[1].trim();
+      }
+    } else if (cleanedText.includes('```')) {
+      const match = cleanedText.match(/```\s*([\s\S]*?)\s*```/);
+      if (match) {
+        cleanedText = match[1].trim();
+      }
+    }
+    
+    // Try to extract JSON if still not clean
+    if (!cleanedText.startsWith('{')) {
+      const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        cleanedText = jsonMatch[0];
+      }
+    }
+    
+    return JSON.parse(cleanedText);
   }
 
   // Commented out for future use:
@@ -354,15 +380,34 @@ Please:
     const content = response.choices[0].message.content;
     if (!content) throw new Error("No response from DeepSeek");
     
-    // DeepSeek might not support structured JSON, so we'll try to parse or extract JSON
-    try {
-      return JSON.parse(content);
-    } catch {
-      // Fallback: try to extract JSON from the response
-      const jsonMatch = content.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        return JSON.parse(jsonMatch[0]);
+    // Clean up the response to extract JSON
+    let cleanedText = content.trim();
+    
+    // Remove markdown code blocks if present
+    if (cleanedText.includes('```json')) {
+      const match = cleanedText.match(/```json\s*([\s\S]*?)\s*```/);
+      if (match) {
+        cleanedText = match[1].trim();
       }
+    } else if (cleanedText.includes('```')) {
+      const match = cleanedText.match(/```\s*([\s\S]*?)\s*```/);
+      if (match) {
+        cleanedText = match[1].trim();
+      }
+    }
+    
+    // Try to extract JSON if still not clean
+    if (!cleanedText.startsWith('{')) {
+      const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        cleanedText = jsonMatch[0];
+      }
+    }
+    
+    try {
+      return JSON.parse(cleanedText);
+    } catch (error) {
+      console.error("DeepSeek JSON parsing error:", cleanedText.substring(0, 200));
       throw new Error("Could not parse JSON response from DeepSeek");
     }
   }
