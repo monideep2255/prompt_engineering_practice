@@ -24,9 +24,12 @@ Prompt engineering is rapidly becoming a key skill in leveraging AI effectively.
   - **Task Alignment** (1-10): How well does the prompt align with its intended purpose?
   - **Completeness** (1-10): Does the prompt include all necessary context?
 - **Improvement Suggestions**: Receive an AI-enhanced version of your prompt
-- **Multiple AI Providers**: Choose from OpenAI GPT-4, Anthropic Claude, xAI Grok, or DeepSeek
+- **Multiple AI Providers**: Choose from OpenAI GPT-4, Anthropic Claude, Google Gemini, Grok, or DeepSeek
+- **🎯 Multi-LLM Evaluation with AI Judge**: Revolutionary feature that evaluates your prompt with 4 different LLMs (Anthropic, Google, Grok, DeepSeek), then uses OpenAI GPT-4 as an expert judge to select the best evaluation with detailed reasoning
+- **Judge Analysis Display**: See step-by-step thinking from the AI judge explaining why one evaluation was chosen over others
 - **Prompt History**: Track your evaluation history and progress over time
 - **Example Prompts**: Learn from high-quality example prompts across different categories
+- **Fully Responsive Design**: Optimized interface that works seamlessly across mobile, tablet, and desktop devices
 
 ### 🔄 Phase 2: Prompt Types & Style Modes (UPCOMING)
 
@@ -76,11 +79,11 @@ Prompt engineering is rapidly becoming a key skill in leveraging AI effectively.
 - **In-memory storage** with structured interfaces for rapid prototyping
 
 ### AI Integration
-- **OpenAI GPT-4** - Latest model for comprehensive evaluation
-- **Anthropic Claude** - Alternative perspective with Claude Sonnet 4
-- **xAI Grok** - Additional evaluation option
-- **DeepSeek** - Cost-effective alternative
-- **Future**: Google Gemini integration planned
+- **OpenAI GPT-4** - Primary judge for multi-LLM evaluation and standalone evaluation
+- **Anthropic Claude** - Advanced reasoning with Claude Sonnet 4
+- **Google Gemini** - Google's flagship LLM for diverse perspectives
+- **Grok** - xAI's conversational AI for unique evaluation angles
+- **DeepSeek** - High-performance cost-effective alternative
 
 ### Development Tools
 - **Vite** for fast development and building
@@ -102,11 +105,11 @@ Prompt engineering is rapidly becoming a key skill in leveraging AI effectively.
    ```
 
 3. Set up your AI provider API keys in the Replit Secrets:
-   - `OPENAI_API_KEY` - OpenAI API key
+   - `OPENAI_API_KEY` - OpenAI API key (required for judge functionality)
    - `ANTHROPIC_API_KEY` - Anthropic API key
-   - `XAI_API_KEY` - xAI API key
-   - `DEEPSEEK_API_KEY` - DeepSeek API key (planned)
-   - `GOOGLE_API_KEY` - Google Gemini API key (planned)
+   - `GROQ_API_KEY` - Grok API key
+   - `DEEPSEEK_API_KEY` - DeepSeek API key
+   - `GOOGLE_API_KEY` - Google Gemini API key
 
 4. Start the development server:
    ```bash
@@ -114,6 +117,32 @@ Prompt engineering is rapidly becoming a key skill in leveraging AI effectively.
    ```
 
 5. Open your browser and navigate to the application
+
+## 🎯 How to Use
+
+The app offers two powerful evaluation modes:
+
+### Single Provider Evaluation
+1. Write your prompt in the input field
+2. Select a specific AI provider (OpenAI, Anthropic, Google Gemini, DeepSeek, or Grok)
+3. Click "Evaluate My Prompt" for immediate feedback
+
+### Multi-LLM Evaluation with AI Judge
+1. Write your prompt in the input field
+2. Select "🏆 4 LLM Evaluation + OpenAI Judge"
+3. Click "Evaluate My Prompt" - the system will:
+   - Send your prompt to 4 different LLMs (Anthropic, Google, Grok, DeepSeek)
+   - Collect all evaluations with scores and feedback
+   - Use OpenAI GPT-4 as an expert judge to analyze all evaluations
+   - Present the best evaluation with detailed reasoning
+   - Show comparison scores from all providers
+
+### Additional Features
+- **View Judge Analysis**: See step-by-step reasoning from the AI judge
+- **Copy Improved Prompts**: Instantly copy enhanced versions to your clipboard
+- **Export Results**: Download evaluation data as JSON
+- **Track History**: Access your complete evaluation history
+- **Example Prompts**: Learn from high-quality examples across different categories
 
 ## 📊 Evaluation Criteria
 

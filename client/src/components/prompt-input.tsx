@@ -25,7 +25,7 @@ const PROMPT_TYPES = [
 ];
 
 const AI_PROVIDERS = [
-  { value: "all", label: "🏆 All Providers + AI Judge" },
+  { value: "all", label: "🏆 4 LLM Evaluation + OpenAI Judge" },
   { value: "openai", label: "OpenAI GPT-4" },
   { value: "anthropic", label: "Anthropic Claude" },
   { value: "google", label: "Google Gemini" },
@@ -194,7 +194,7 @@ export default function PromptInput({
           >
             <Wand2 className="w-4 h-4 mr-2" />
             {evaluateMutation.isPending ? 
-              (selectedProvider === "all" ? "Evaluating with all providers..." : "Evaluating...") : 
+              (selectedProvider === "all" ? "Evaluating with 4 LLMs + OpenAI Judge..." : "Evaluating...") : 
               "Evaluate My Prompt"}
           </Button>
         </CardContent>

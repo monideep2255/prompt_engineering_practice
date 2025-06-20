@@ -113,18 +113,15 @@ Consider the prompt type context when scoring. Provide a thorough evaluation and
 
 Consider the prompt type context when scoring. Provide a thorough evaluation and an improved version.`;
 
-    const providers = ['openai', 'anthropic', 'grok', 'deepseek', 'google'];
+    const providers = ['anthropic', 'grok', 'deepseek', 'google'];
     const evaluations = [];
     const errors = [];
 
-    // Get evaluations from all available providers
+    // Get evaluations from all available providers (excluding OpenAI which will be the judge)
     for (const provider of providers) {
       try {
         let response: any;
         switch (provider) {
-          case 'openai':
-            response = await this.evaluateWithOpenAI(userPrompt);
-            break;
           case 'anthropic':
             response = await this.evaluateWithAnthropic(userPrompt);
             break;
