@@ -1,20 +1,9 @@
 import { useState } from "react";
 import PromptInput from "@/components/prompt-input";
 import EvaluationResults from "@/components/evaluation-results";
-import PromptHistory from "@/components/prompt-history";
-import { Button } from "@/components/ui/button";
-import { 
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { History } from "lucide-react";
 
 export default function Home() {
   const [currentProvider, setCurrentProvider] = useState("OpenAI GPT-4");
-  const [showHistory, setShowHistory] = useState(false);
   const [evaluationData, setEvaluationData] = useState(null);
   const [isEvaluating, setIsEvaluating] = useState(false);
 
@@ -47,17 +36,7 @@ export default function Home() {
                 <p className="text-xs sm:text-sm text-lab-gray hidden sm:block">AI-Powered Prompt Engineering Coach</p>
               </div>
             </div>
-            <div className="flex items-center space-x-2 sm:space-x-4">
-              <Button
-                variant="default"
-                size="sm"
-                onClick={() => setShowHistory(!showHistory)}
-                className="bg-lab-blue hover:bg-lab-blue-light text-xs sm:text-sm"
-              >
-                <History className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
-                <span className="hidden sm:inline">History</span>
-              </Button>
-            </div>
+
           </div>
         </div>
       </header>
@@ -83,12 +62,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* History Section */}
-        {showHistory && (
-          <div className="mt-12">
-            <PromptHistory />
-          </div>
-        )}
+
       </div>
     </div>
   );

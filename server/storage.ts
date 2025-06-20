@@ -1,26 +1,17 @@
 import { prompts, examplePrompts, type Prompt, type InsertPrompt, type ExamplePrompt, type InsertExamplePrompt } from "@shared/schema";
 
 export interface IStorage {
-  // Prompt operations
-  createPrompt(prompt: InsertPrompt): Promise<Prompt>;
-  getPromptsByDate(limit?: number): Promise<Prompt[]>;
-  getPromptById(id: number): Promise<Prompt | undefined>;
-  
-  // Example prompt operations
+  // Example prompt operations only
   createExamplePrompt(examplePrompt: InsertExamplePrompt): Promise<ExamplePrompt>;
   getExamplePrompts(): Promise<ExamplePrompt[]>;
 }
 
 export class MemStorage implements IStorage {
-  private prompts: Map<number, Prompt>;
   private examplePrompts: Map<number, ExamplePrompt>;
-  private currentPromptId: number;
   private currentExampleId: number;
 
   constructor() {
-    this.prompts = new Map();
     this.examplePrompts = new Map();
-    this.currentPromptId = 1;
     this.currentExampleId = 1;
     
     // Seed example prompts
