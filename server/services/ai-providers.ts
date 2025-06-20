@@ -1,6 +1,6 @@
 import OpenAI from "openai";
 import Anthropic from '@anthropic-ai/sdk';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+// import { GoogleGenerativeAI } from '@google/generative-ai'; // Commented out for future use
 import { EvaluationResponse } from "@shared/schema";
 
 // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
@@ -13,17 +13,18 @@ const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY || process.env.VITE_ANTHROPIC_API_KEY || "",
 });
 
-const grokAI = new OpenAI({ 
-  baseURL: "https://api.x.ai/v1", 
-  apiKey: process.env.GROQ_API_KEY || process.env.VITE_GROQ_API_KEY || ""
-});
-
 const deepseekAI = new OpenAI({
   baseURL: "https://api.deepseek.com",
   apiKey: process.env.DEEPSEEK_API_KEY || process.env.VITE_DEEPSEEK_API_KEY || ""
 });
 
-const geminiAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY || "");
+// Commented out for future use:
+// const grokAI = new OpenAI({ 
+//   baseURL: "https://api.x.ai/v1", 
+//   apiKey: process.env.GROQ_API_KEY || process.env.VITE_GROQ_API_KEY || ""
+// });
+
+// const geminiAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY || "");
 
 const SYSTEM_PROMPT = `You are a Prompt Evaluation Agent specialized in analyzing and improving user prompts for AI interactions. Your task is to evaluate prompts across four key criteria and provide actionable improvement suggestions.
 
@@ -77,15 +78,16 @@ Consider the prompt type context when scoring. Provide a thorough evaluation and
         case 'anthropic':
           response = await this.evaluateWithAnthropic(userPrompt);
           break;
-        case 'grok':
-          response = await this.evaluateWithGrok(userPrompt);
-          break;
         case 'deepseek':
           response = await this.evaluateWithDeepSeek(userPrompt);
           break;
-        case 'google':
-          response = await this.evaluateWithGemini(userPrompt);
-          break;
+        // Commented out for future use:
+        // case 'grok':
+        //   response = await this.evaluateWithGrok(userPrompt);
+        //   break;
+        // case 'google':
+        //   response = await this.evaluateWithGemini(userPrompt);
+        //   break;
         default:
           throw new Error(`Unsupported AI provider: ${provider}`);
       }
@@ -113,11 +115,13 @@ Consider the prompt type context when scoring. Provide a thorough evaluation and
 
 Consider the prompt type context when scoring. Provide a thorough evaluation and an improved version.`;
 
-    const providers = ['anthropic', 'grok', 'deepseek', 'google'];
+    // Using 2 LLM providers for evaluation (commented out others for future use)
+    const providers = ['anthropic', 'deepseek'];
+    // const providers = ['anthropic', 'grok', 'deepseek', 'google']; // Full set for future
     const evaluations = [];
     const errors = [];
 
-    // Get evaluations from all available providers (excluding OpenAI which will be the judge)
+    // Get evaluations from available providers (excluding OpenAI which will be the judge)
     for (const provider of providers) {
       try {
         let response: any;
@@ -125,15 +129,16 @@ Consider the prompt type context when scoring. Provide a thorough evaluation and
           case 'anthropic':
             response = await this.evaluateWithAnthropic(userPrompt);
             break;
-          case 'grok':
-            response = await this.evaluateWithGrok(userPrompt);
-            break;
           case 'deepseek':
             response = await this.evaluateWithDeepSeek(userPrompt);
             break;
-          case 'google':
-            response = await this.evaluateWithGemini(userPrompt);
-            break;
+          // Commented out for future use:
+          // case 'grok':
+          //   response = await this.evaluateWithGrok(userPrompt);
+          //   break;
+          // case 'google':
+          //   response = await this.evaluateWithGemini(userPrompt);
+          //   break;
         }
         
         const overallScore = Math.round(
@@ -220,22 +225,6 @@ Please:
           response = { choices: [{ message: { content: anthropicContent } }] };
           break;
           
-        case 'google':
-          const model = geminiAI.getGenerativeModel({ model: "gemini-1.5-pro" });
-          const googleResponse = await model.generateContent(judgePrompt);
-          response = { choices: [{ message: { content: googleResponse.response.text() } }] };
-          break;
-          
-        case 'grok':
-          const grokResponse = await grokAI.chat.completions.create({
-            model: "grok-2-1212",
-            messages: [{ role: "user", content: judgePrompt }],
-            response_format: { type: "json_object" },
-            temperature: 0.3,
-          });
-          response = grokResponse;
-          break;
-          
         case 'deepseek':
           const deepseekResponse = await deepseekAI.chat.completions.create({
             model: "deepseek-chat",
@@ -245,6 +234,23 @@ Please:
           });
           response = deepseekResponse;
           break;
+          
+        // Commented out for future use:
+        // case 'google':
+        //   const model = geminiAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+        //   const googleResponse = await model.generateContent(judgePrompt);
+        //   response = { choices: [{ message: { content: googleResponse.response.text() } }] };
+        //   break;
+        //   
+        // case 'grok':
+        //   const grokResponse = await grokAI.chat.completions.create({
+        //     model: "grok-2-1212",
+        //     messages: [{ role: "user", content: judgePrompt }],
+        //     response_format: { type: "json_object" },
+        //     temperature: 0.3,
+        //   });
+        //   response = grokResponse;
+        //   break;
           
         default:
           throw new Error(`Unknown judge provider: ${judgeProvider}`);
@@ -310,22 +316,23 @@ Please:
     return JSON.parse(content.text);
   }
 
-  private async evaluateWithGrok(userPrompt: string): Promise<Omit<EvaluationResponse, 'overallScore'>> {
-    const response = await grokAI.chat.completions.create({
-      model: "grok-2-1212",
-      messages: [
-        { role: "system", content: SYSTEM_PROMPT },
-        { role: "user", content: userPrompt }
-      ],
-      response_format: { type: "json_object" },
-      temperature: 0.3,
-    });
+  // Commented out for future use:
+  // private async evaluateWithGrok(userPrompt: string): Promise<Omit<EvaluationResponse, 'overallScore'>> {
+  //   const response = await grokAI.chat.completions.create({
+  //     model: "grok-2-1212",
+  //     messages: [
+  //       { role: "system", content: SYSTEM_PROMPT },
+  //       { role: "user", content: userPrompt }
+  //     ],
+  //     response_format: { type: "json_object" },
+  //     temperature: 0.3,
+  //   });
 
-    const content = response.choices[0].message.content;
-    if (!content) throw new Error("No response from Grok");
+  //   const content = response.choices[0].message.content;
+  //   if (!content) throw new Error("No response from Grok");
     
-    return JSON.parse(content);
-  }
+  //   return JSON.parse(content);
+  // }
 
   private async evaluateWithDeepSeek(userPrompt: string): Promise<Omit<EvaluationResponse, 'overallScore'>> {
     const response = await deepseekAI.chat.completions.create({
@@ -353,28 +360,29 @@ Please:
     }
   }
 
-  private async evaluateWithGemini(userPrompt: string): Promise<Omit<EvaluationResponse, 'overallScore'>> {
-    const model = geminiAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+  // Commented out for future use:
+  // private async evaluateWithGemini(userPrompt: string): Promise<Omit<EvaluationResponse, 'overallScore'>> {
+  //   const model = geminiAI.getGenerativeModel({ model: "gemini-1.5-pro" });
 
-    const prompt = `${SYSTEM_PROMPT}\n\n${userPrompt}`;
+  //   const prompt = `${SYSTEM_PROMPT}\n\n${userPrompt}`;
 
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const content = response.text();
+  //   const result = await model.generateContent(prompt);
+  //   const response = await result.response;
+  //   const content = response.text();
 
-    if (!content) throw new Error("No response from Google Gemini");
+  //   if (!content) throw new Error("No response from Google Gemini");
 
-    try {
-      return JSON.parse(content);
-    } catch {
-      // Fallback: try to extract JSON from the response
-      const jsonMatch = content.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        return JSON.parse(jsonMatch[0]);
-      }
-      throw new Error("Could not parse JSON response from Google Gemini");
-    }
-  }
+  //   try {
+  //     return JSON.parse(content);
+  //   } catch {
+  //     // Fallback: try to extract JSON from the response
+  //     const jsonMatch = content.match(/\{[\s\S]*\}/);
+  //     if (jsonMatch) {
+  //       return JSON.parse(jsonMatch[0]);
+  //     }
+  //     throw new Error("Could not parse JSON response from Google Gemini");
+  //   }
+  // }
 }
 
 export const aiProviderService = new AIProviderService();
