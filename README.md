@@ -1,3 +1,5 @@
+*Last Updated: June 19, 2025*
+
 # 🧠 Prompt Practice Lab
 
 **AI-Powered Prompt Engineering Coach**
@@ -264,10 +266,6 @@ We welcome contributions! Areas where you can help:
 - **UI/UX Improvements**: Enhance the user experience
 - **Documentation**: Improve guides and examples
 - **Testing**: Add test coverage and quality assurance
-
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## 🔗 Links
 
