@@ -10,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { History, Brain } from "lucide-react";
+import { History } from "lucide-react";
 
 export default function Home() {
   const [currentProvider, setCurrentProvider] = useState("OpenAI GPT-4");
@@ -48,10 +48,6 @@ export default function Home() {
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2 text-sm text-lab-gray">
-                <Brain className="w-4 h-4" />
-                <span>{currentProvider}</span>
-              </div>
               <Button
                 variant="default"
                 size="sm"
