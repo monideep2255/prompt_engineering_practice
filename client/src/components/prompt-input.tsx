@@ -67,18 +67,19 @@ export default function PromptInput({
       if (data.aiProvider.startsWith("all-")) {
         const judgeProvider = data.aiProvider.replace("all-", "");
         const steps = [
-          "Getting evaluation from DeepSeek...",
-          "Getting evaluation from Groq...", 
-          "Getting evaluation from Google...",
-          "Getting evaluation from Anthropic...",
-          `Sending all evaluations to ${judgeProvider.charAt(0).toUpperCase() + judgeProvider.slice(1)} judge to pick the best evaluation...`
+          "🤖 Getting evaluation from DeepSeek - analyzing clarity, specificity, and task alignment...",
+          "⚡ Getting evaluation from Groq - evaluating completeness and overall effectiveness...", 
+          "🌟 Getting evaluation from Google - assessing prompt structure and coherence...",
+          "🧠 Getting evaluation from Anthropic - reviewing language precision and context...",
+          `🏆 Sending all 4 evaluations to ${judgeProvider.charAt(0).toUpperCase() + judgeProvider.slice(1)} judge to analyze and select the best evaluation for your ${data.promptType} task...`
         ];
         
-        // Simulate progress steps
+        // Simulate progress steps with varied timing
+        const delays = [1000, 1200, 900, 1100, 1500]; // Varied delays for realistic feel
         for (let i = 0; i < steps.length; i++) {
           setCurrentStep(steps[i]);
           setEvaluationProgress(prev => [...prev, steps[i]]);
-          await new Promise(resolve => setTimeout(resolve, 800)); // Small delay between steps
+          await new Promise(resolve => setTimeout(resolve, delays[i]));
         }
       }
       
@@ -86,7 +87,7 @@ export default function PromptInput({
       return response.json();
     },
     onSuccess: (data) => {
-      setCurrentStep("Evaluation complete!");
+      setCurrentStep("✅ Evaluation complete! Analysis ready with detailed feedback and suggestions.");
       onEvaluationComplete(data);
       // Invalidate history to refresh it
       queryClient.invalidateQueries({ queryKey: ["/api/prompts"] });
@@ -98,7 +99,7 @@ export default function PromptInput({
       setTimeout(() => {
         setEvaluationProgress([]);
         setCurrentStep("");
-      }, 2000);
+      }, 2500);
     },
     onError: (error: Error) => {
       setCurrentStep("");
