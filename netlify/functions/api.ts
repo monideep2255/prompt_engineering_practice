@@ -3,7 +3,10 @@ import { storage } from '../../server/storage';
 import { aiProviderService } from '../../server/services/ai-providers';
 
 export const handler: Handler = async (event: HandlerEvent, context: HandlerContext): Promise<HandlerResponse> => {
-  const { path, httpMethod, headers, body } = event;
+  const { path, httpMethod, headers, body, queryStringParameters } = event;
+  
+  // Get the actual API path from query parameters or path
+  const apiPath = queryStringParameters?.path || path;
   
   // CORS headers
   const corsHeaders = {
@@ -23,8 +26,8 @@ export const handler: Handler = async (event: HandlerEvent, context: HandlerCont
   }
 
   try {
-    // GET /api/example-prompts
-    if (path === '/api/example-prompts' && httpMethod === 'GET') {
+    // GET /example-prompts
+    if (apiPath === 'example-prompts' && httpMethod === 'GET') {
       const examples = await storage.getExamplePrompts();
       return {
         statusCode: 200,
@@ -33,9 +36,9 @@ export const handler: Handler = async (event: HandlerEvent, context: HandlerCont
       };
     }
     
-    // GET /api/task-scenario/:promptType
-    if (path.startsWith('/api/task-scenario/') && httpMethod === 'GET') {
-      const promptType = path.split('/api/task-scenario/')[1];
+    // GET /task-scenario/:promptType
+    if (apiPath?.startsWith('task-scenario/') && httpMethod === 'GET') {
+      const promptType = apiPath.split('task-scenario/')[1];
       const scenario = await storage.getRandomTaskScenario(promptType);
       return {
         statusCode: 200,
@@ -44,8 +47,8 @@ export const handler: Handler = async (event: HandlerEvent, context: HandlerCont
       };
     }
     
-    // POST /api/evaluate-prompt
-    if (path === '/api/evaluate-prompt' && httpMethod === 'POST') {
+    // POST /evaluate-prompt
+    if (apiPath === 'evaluate-prompt' && httpMethod === 'POST') {
       if (!body) {
         return {
           statusCode: 400,
