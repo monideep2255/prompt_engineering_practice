@@ -102,10 +102,10 @@ Prompt engineering is rapidly becoming a key skill in leveraging AI effectively.
 ## 🚦 Getting Started
 
 ### Prerequisites
-- Node.js 20+ installed
+- Node.js 18+ installed
 - At least one AI provider API key
 
-### Installation
+### Local Development
 
 1. Clone the repository
 2. Install dependencies:
@@ -113,19 +113,63 @@ Prompt engineering is rapidly becoming a key skill in leveraging AI effectively.
    npm install
    ```
 
-3. Set up your AI provider API keys in the Replit Secrets:
-   - `OPENAI_API_KEY` - OpenAI API key (required for judge functionality)
-   - `ANTHROPIC_API_KEY` - Anthropic API key
-   - `GROQ_API_KEY` - Grok API key
-   - `DEEPSEEK_API_KEY` - DeepSeek API key
-   - `GOOGLE_API_KEY` - Google Gemini API key
+3. Set up environment variables:
+   Create a `.env` file with your API keys:
+   ```
+   OPENAI_API_KEY=your_openai_key_here
+   ANTHROPIC_API_KEY=your_anthropic_key_here
+   GOOGLE_API_KEY=your_google_key_here
+   DEEPSEEK_API_KEY=your_deepseek_key_here
+   XAI_API_KEY=your_groq_key_here
+   ```
 
 4. Start the development server:
    ```bash
    npm run dev
    ```
 
-5. Open your browser and navigate to the application
+5. Open http://localhost:5000 in your browser
+
+## 🚀 Deployment
+
+### Netlify Deployment (Recommended)
+
+The application is configured for automatic deployment on Netlify with serverless functions.
+
+#### Setup Instructions:
+
+1. **Connect Repository**: Link your GitHub repository to Netlify
+
+2. **Build Settings**:
+   - Build command: `npm run build`
+   - Publish directory: `dist`
+
+3. **Environment Variables**: Add these in Netlify's dashboard:
+   ```
+   OPENAI_API_KEY=your_openai_key_here
+   ANTHROPIC_API_KEY=your_anthropic_key_here
+   GOOGLE_API_KEY=your_google_key_here
+   DEEPSEEK_API_KEY=your_deepseek_key_here
+   XAI_API_KEY=your_groq_key_here
+   ```
+
+4. **Deploy**: Push changes to your main branch for automatic deployment
+
+#### Production API Endpoints:
+- `GET /.netlify/functions/api/api/example-prompts`
+- `POST /.netlify/functions/api/api/evaluate-prompt`
+
+### Alternative Deployment Options
+
+#### Replit Deployment
+1. Click the "Deploy" button in Replit
+2. Add environment variables in the Secrets tab
+3. Application available at your `.replit.app` domain
+
+#### Vercel Deployment
+1. Connect repository to Vercel
+2. Add environment variables in project settings
+3. Deploy with automatic builds on push
 
 ## 🎯 How to Use
 
