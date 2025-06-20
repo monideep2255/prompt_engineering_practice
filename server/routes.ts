@@ -11,7 +11,7 @@ const evaluatePromptSchema = z.object({
   aiProvider: z.string().min(1, "AI provider is required"),
 });
 
-export async function registerRoutes(app: Express): Promise<Server> {
+export function registerRoutes(app: Express): void {
   // Get example prompts
   app.get("/api/example-prompts", async (req, res) => {
     try {
@@ -59,6 +59,5 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
 
 
-  const httpServer = createServer(app);
-  return httpServer;
+
 }
