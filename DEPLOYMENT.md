@@ -1,103 +1,86 @@
-# Deployment Guide - Prompt Practice Lab
+# Netlify Deployment Guide
 
-## Quick Deployment Options
+## Quick Deploy Steps
 
-### Option 1: Replit Deployment (Recommended - Easiest)
+1. **Push to GitHub**
+   ```bash
+   git add .
+   git commit -m "Deploy Prompt Practice Lab"
+   git push origin main
+   ```
 
-1. **Deploy on Replit**:
-   - Click the "Deploy" button in your Replit interface
-   - Add environment variables in the Secrets tab:
-     ```
-     OPENAI_API_KEY=your_openai_key_here
-     ANTHROPIC_API_KEY=your_anthropic_key_here
-     GOOGLE_API_KEY=your_google_key_here
-     DEEPSEEK_API_KEY=your_deepseek_key_here
-     XAI_API_KEY=your_groq_key_here
-     ```
-   - Your app will be available at `https://your-repl-name.your-username.repl.co`
+2. **Create Netlify Site**
+   - Go to [netlify.com](https://netlify.com)
+   - Click "New site from Git"
+   - Select your GitHub repository
+   - Use these build settings:
+     - Build command: `npm run build`
+     - Publish directory: `dist`
+     - Node version: 20
 
-### Option 2: Vercel Deployment
+3. **Add Environment Variables**
+   In Netlify dashboard → Site settings → Environment variables, add:
+   ```
+   OPENAI_API_KEY=your_openai_key_here
+   ANTHROPIC_API_KEY=your_anthropic_key_here
+   DEEPSEEK_API_KEY=your_deepseek_key_here
+   ```
 
-1. **Connect to Vercel**:
-   - Push your code to GitHub
-   - Connect your GitHub repo to Vercel
-   - Add environment variables in Vercel dashboard
-   - Deploy automatically
+4. **Deploy**
+   - Click "Deploy site"
+   - Netlify will automatically build and deploy your app
 
-### Option 3: Railway Deployment
+## API Key Setup
 
-1. **Deploy to Railway**:
-   - Connect your GitHub repository
-   - Add environment variables
-   - Railway will auto-detect and deploy your Node.js app
+### OpenAI API Key
+1. Go to [platform.openai.com](https://platform.openai.com)
+2. Sign up/Login
+3. Navigate to API Keys section
+4. Create new secret key
+5. Copy the key (starts with `sk-`)
 
-## Environment Variables Required
+### Anthropic API Key
+1. Go to [console.anthropic.com](https://console.anthropic.com)
+2. Sign up/Login
+3. Navigate to API Keys
+4. Create new key
+5. Copy the key (starts with `sk-ant-`)
 
-For any deployment platform, you need these API keys:
-
-```bash
-OPENAI_API_KEY=sk-...          # Required for OpenAI evaluations
-ANTHROPIC_API_KEY=sk-ant-...   # Required for Anthropic evaluations  
-GOOGLE_API_KEY=AI...           # Required for Google/Gemini evaluations
-DEEPSEEK_API_KEY=sk-...        # Required for DeepSeek evaluations
-XAI_API_KEY=xai-...            # Required for Groq evaluations
-```
-
-## Getting API Keys
-
-### OpenAI
-- Visit: https://platform.openai.com/api-keys
-- Create a new API key
-- Add billing method for usage
-
-### Anthropic
-- Visit: https://console.anthropic.com/
-- Create API key in Account Settings
-
-### Google (Gemini)
-- Visit: https://aistudio.google.com/app/apikey
-- Create API key
-- Note: Free tier has quota limits
-
-### DeepSeek
-- Visit: https://platform.deepseek.com/api_keys
-- Create API key
-
-### Groq (xAI)
-- Visit: https://console.x.ai/
-- Create API key
-- Note: May require waitlist approval
-
-## Build Commands
-
-- **Build**: `npm run build`
-- **Start**: `npm start` (production)
-- **Dev**: `npm run dev` (development)
+### DeepSeek API Key
+1. Go to [platform.deepseek.com](https://platform.deepseek.com)
+2. Sign up/Login
+3. Navigate to API Keys
+4. Create new key
+5. Copy the key
 
 ## Troubleshooting
 
-### API Quota Issues
-- Google Gemini: Free tier has strict limits, consider upgrading
-- All providers: Monitor usage and add billing as needed
+### 404 Page Not Found
+- Ensure `_redirects` file is in `client/public/`
+- Check netlify.toml has proper redirect configuration
+- Verify build command produces `dist` directory
 
-### Deployment Issues
-- Ensure all environment variables are set
-- Check build logs for missing dependencies
-- Verify API keys are valid and have sufficient credits
+### API Errors
+- Verify all environment variables are set correctly in Netlify
+- Check API key formats and validity
+- Ensure sufficient API credits/usage limits
 
-### CORS Issues
-- The app includes proper CORS headers
-- If issues persist, check your deployment platform's proxy settings
+### Build Failures
+- Check Node.js version is set to 20
+- Verify all dependencies are properly installed
+- Review build logs for specific error messages
 
-## Current Status
-- ✅ Task scenario randomizer working
-- ✅ Multi-LLM evaluation with progress tracking
-- ✅ Export functionality (JSON/YAML)
-- ⚠️ Some API keys may need updating (check logs)
-- ⚠️ Netlify deployment needs configuration fixes
+## Configuration Files
 
-## Recommended Next Steps
-1. Deploy on Replit first (simplest option)
-2. Test all evaluation features
-3. Add valid API keys for all providers
-4. Consider upgrading Google Gemini quota if needed
+The project includes these deployment configuration files:
+- `netlify.toml` - Main Netlify configuration
+- `client/public/_redirects` - SPA routing configuration
+- `netlify/functions/api.ts` - Serverless function handler
+
+## Custom Domain (Optional)
+
+To use a custom domain:
+1. In Netlify dashboard → Domain settings
+2. Add custom domain
+3. Follow DNS configuration instructions
+4. SSL certificate will be automatically provisioned

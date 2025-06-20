@@ -125,9 +125,7 @@ Prompt engineering is rapidly becoming a key skill in leveraging AI effectively.
    ```
    OPENAI_API_KEY=your_openai_key_here
    ANTHROPIC_API_KEY=your_anthropic_key_here
-   GOOGLE_API_KEY=your_google_key_here
    DEEPSEEK_API_KEY=your_deepseek_key_here
-   XAI_API_KEY=your_groq_key_here
    ```
 
 4. Start the development server:
@@ -155,16 +153,12 @@ The application is configured for automatic deployment on Netlify with serverles
    ```
    OPENAI_API_KEY=your_openai_key_here
    ANTHROPIC_API_KEY=your_anthropic_key_here
-   GOOGLE_API_KEY=your_google_key_here
    DEEPSEEK_API_KEY=your_deepseek_key_here
-   XAI_API_KEY=your_groq_key_here
    ```
 
 4. **Deploy**: Push changes to your main branch for automatic deployment
 
-#### Production API Endpoints:
-- `GET /.netlify/functions/api/api/example-prompts`
-- `POST /.netlify/functions/api/api/evaluate-prompt`
+For detailed deployment instructions and troubleshooting, see [DEPLOYMENT.md](./DEPLOYMENT.md)
 
 ### Alternative Deployment Options
 
