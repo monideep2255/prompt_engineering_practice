@@ -471,7 +471,7 @@ export default function EvaluationResults({ evaluationData, isEvaluating, onUseI
         </div>
         <h3 className="text-lg font-semibold text-gray-900 mb-2">Ready to Evaluate</h3>
         <p className="text-lab-gray mb-4">
-          Enter a prompt on the left to get detailed AI-powered feedback and improvement suggestions.
+          Enter a prompt to get detailed AI-powered feedback and improvement suggestions.
         </p>
         <div className="flex items-center justify-center space-x-4 text-sm text-lab-gray">
           <div className="flex items-center space-x-1">
