@@ -216,19 +216,18 @@ Please:
             system: 'You are an expert AI evaluation judge. Respond only in valid JSON format.',
             messages: [{ role: 'user', content: judgePrompt }],
           });
-          response = { choices: [{ message: { content: anthropicResponse.content[0].text } }] };
+          const anthropicContent = anthropicResponse.content[0].type === 'text' ? anthropicResponse.content[0].text : '';
+          response = { choices: [{ message: { content: anthropicContent } }] };
           break;
           
         case 'google':
-          const googleResponse = await gemini.generateContent({
-            contents: [{ role: 'user', parts: [{ text: judgePrompt }] }],
-            generationConfig: { temperature: 0.3 },
-          });
+          const model = geminiAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+          const googleResponse = await model.generateContent(judgePrompt);
           response = { choices: [{ message: { content: googleResponse.response.text() } }] };
           break;
           
         case 'grok':
-          const grokResponse = await grok.chat.completions.create({
+          const grokResponse = await grokAI.chat.completions.create({
             model: "grok-2-1212",
             messages: [{ role: "user", content: judgePrompt }],
             response_format: { type: "json_object" },
@@ -238,7 +237,7 @@ Please:
           break;
           
         case 'deepseek':
-          const deepseekResponse = await deepseek.chat.completions.create({
+          const deepseekResponse = await deepseekAI.chat.completions.create({
             model: "deepseek-chat",
             messages: [{ role: "user", content: judgePrompt }],
             response_format: { type: "json_object" },

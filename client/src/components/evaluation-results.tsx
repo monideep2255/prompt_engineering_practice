@@ -249,7 +249,7 @@ export default function EvaluationResults({ evaluationData, isEvaluating }: Eval
               {evaluationData.allEvaluations && (
                 <div className="mt-4">
                   <p className="text-sm font-medium text-gray-700 mb-2">
-                    Compared {evaluationData.allEvaluations.length} LLM evaluations (OpenAI used as judge)
+                    Compared {evaluationData.allEvaluations.length} LLM evaluations
                   </p>
                   <div className="flex flex-wrap gap-2">
                     {evaluationData.allEvaluations.map((evalItem: any, index: number) => (

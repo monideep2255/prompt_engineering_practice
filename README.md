@@ -24,9 +24,13 @@ Prompt engineering is rapidly becoming a key skill in leveraging AI effectively.
   - **Task Alignment** (1-10): How well does the prompt align with its intended purpose?
   - **Completeness** (1-10): Does the prompt include all necessary context?
 - **Improvement Suggestions**: Receive an AI-enhanced version of your prompt
-- **Multiple AI Providers**: Choose from OpenAI GPT-4, Anthropic Claude, Google Gemini, Grok, or DeepSeek
-- **🎯 Multi-LLM Evaluation with AI Judge**: Revolutionary feature that evaluates your prompt with 4 different LLMs (Anthropic, Google, Grok, DeepSeek), then uses OpenAI GPT-4 as an expert judge to select the best evaluation with detailed reasoning
-- **Judge Analysis Display**: See step-by-step thinking from the AI judge explaining why one evaluation was chosen over others
+- **🎯 Multi-Judge Evaluation System**: Revolutionary feature that evaluates your prompt with 4 different LLMs (Anthropic, Google, Grok, DeepSeek), then uses your choice of AI judge to select the best evaluation:
+  - **OpenAI Judge**: GPT-4 analysis with detailed reasoning
+  - **Anthropic Judge**: Claude's advanced reasoning capabilities
+  - **Google Judge**: Gemini's comprehensive evaluation approach
+  - **DeepSeek Judge**: Efficient and insightful analysis
+  - **Grok Judge**: Unique perspective and evaluation style
+- **Judge Analysis Display**: See step-by-step thinking from any AI judge explaining why one evaluation was chosen over others
 - **Prompt History**: Track your evaluation history and progress over time
 - **Example Prompts**: Learn from high-quality example prompts across different categories
 - **Fully Responsive Design**: Optimized interface that works seamlessly across mobile, tablet, and desktop devices
@@ -79,11 +83,13 @@ Prompt engineering is rapidly becoming a key skill in leveraging AI effectively.
 - **In-memory storage** with structured interfaces for rapid prototyping
 
 ### AI Integration
-- **OpenAI GPT-4** - Primary judge for multi-LLM evaluation and standalone evaluation
-- **Anthropic Claude** - Advanced reasoning with Claude Sonnet 4
-- **Google Gemini** - Google's flagship LLM for diverse perspectives
-- **Grok** - xAI's conversational AI for unique evaluation angles
-- **DeepSeek** - High-performance cost-effective alternative
+- **OpenAI GPT-4** - Advanced reasoning and analysis capabilities
+- **Anthropic Claude** - Expert evaluation with Claude Sonnet 4
+- **Google Gemini** - Google's flagship LLM for comprehensive analysis
+- **Grok** - xAI's conversational AI for unique perspectives
+- **DeepSeek** - High-performance cost-effective evaluation
+
+**Multi-Judge System**: Each of these 5 AI models can serve as both evaluator and judge, providing you with diverse analytical perspectives on your prompts.
 
 ### Development Tools
 - **Vite** for fast development and building

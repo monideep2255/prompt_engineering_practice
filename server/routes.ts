@@ -28,8 +28,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { content, promptType, aiProvider } = evaluatePromptSchema.parse(req.body);
       
-      // Evaluate the prompt using the specified AI provider
-      const evaluation = await aiProviderService.evaluatePrompt(content, promptType, aiProvider);
+      let evaluation;
+      if (aiProvider.startsWith("all-")) {
+        const judgeProvider = aiProvider.replace("all-", "");
+        evaluation = await aiProviderService.evaluateWithAllProviders(content, promptType, judgeProvider);
+      } else {
+        evaluation = await aiProviderService.evaluatePrompt(content, promptType, aiProvider);
+      }
       
       // Validate the evaluation response
       const validatedEvaluation = evaluationResponseSchema.parse(evaluation);
