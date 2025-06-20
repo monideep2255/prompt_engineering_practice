@@ -21,9 +21,10 @@ import { useState } from "react";
 interface EvaluationResultsProps {
   evaluationData: any;
   isEvaluating: boolean;
+  onUseImprovedPrompt?: (prompt: string) => void;
 }
 
-export default function EvaluationResults({ evaluationData, isEvaluating }: EvaluationResultsProps) {
+export default function EvaluationResults({ evaluationData, isEvaluating, onUseImprovedPrompt }: EvaluationResultsProps) {
   const { toast } = useToast();
   const [exportFormat, setExportFormat] = useState("json");
 
@@ -421,6 +422,15 @@ export default function EvaluationResults({ evaluationData, isEvaluating }: Eval
               <Button 
                 size="sm"
                 className="bg-lab-blue hover:bg-lab-blue-light text-xs sm:text-sm"
+                onClick={() => {
+                  if (onUseImprovedPrompt && evaluationData?.improvedPrompt) {
+                    onUseImprovedPrompt(evaluationData.improvedPrompt);
+                    toast({
+                      title: "Prompt Updated",
+                      description: "The improved prompt has been loaded into the input field.",
+                    });
+                  }
+                }}
               >
                 <RotateCcw className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                 Use This Version

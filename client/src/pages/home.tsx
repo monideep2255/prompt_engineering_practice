@@ -6,6 +6,7 @@ export default function Home() {
   const [currentProvider, setCurrentProvider] = useState("OpenAI GPT-4");
   const [evaluationData, setEvaluationData] = useState(null);
   const [isEvaluating, setIsEvaluating] = useState(false);
+  const [promptInputRef, setPromptInputRef] = useState<any>(null);
 
   const handleEvaluationComplete = (data: any) => {
     setEvaluationData(data);
@@ -15,6 +16,20 @@ export default function Home() {
   const handleEvaluationStart = () => {
     setIsEvaluating(true);
     setEvaluationData(null);
+  };
+
+  const handleUseImprovedPrompt = (prompt: string) => {
+    if (promptInputRef) {
+      promptInputRef.setPromptContent(prompt);
+    }
+  };
+
+  const handleLogoClick = () => {
+    setEvaluationData(null);
+    setIsEvaluating(false);
+    if (promptInputRef) {
+      promptInputRef.clearForm();
+    }
   };
 
   return (

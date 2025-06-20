@@ -246,7 +246,7 @@ export default function PromptInput({
           >
             <Wand2 className="w-4 h-4 mr-2" />
             {evaluateMutation.isPending ? 
-              (selectedProvider.startsWith("all-") ? "Evaluating with 4 LLMs + AI Judge..." : "Evaluating...") : 
+              (selectedProvider.startsWith("all-") ? "Evaluating with 2 LLMs + AI Judge..." : "Evaluating...") : 
               "Evaluate My Prompt"}
           </Button>
         </CardContent>
