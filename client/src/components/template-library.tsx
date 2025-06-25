@@ -459,9 +459,8 @@ Analysis process:
         <Tabs defaultValue="creative-writing" className="w-full">
           <TabsList className="grid w-full grid-cols-6">
             {promptTypes.map((type) => (
-              <TabsTrigger key={type.id} value={type.id} className="flex items-center space-x-1">
-                {type.icon}
-                <span className="hidden sm:inline text-[12px]">{type.label}</span>
+              <TabsTrigger key={type.id} value={type.id} className="text-xs">
+                {type.label}
               </TabsTrigger>
             ))}
           </TabsList>
