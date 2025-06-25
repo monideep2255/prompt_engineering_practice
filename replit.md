@@ -31,7 +31,14 @@ AI-powered personal training tool for improving prompt engineering skills. Built
 ## Recent Changes
 
 ### December 25, 2024
-- ✓ **Phase 2 Implementation Started**: Style-specific evaluation criteria system
+- ✓ **Phase 2 Complete**: Style-specific evaluation criteria system
+- ✓ **Learn Page**: Comprehensive FAQ and prompt writing guidance with:
+  - Style-specific recommendations for all 6 prompt types
+  - Good vs bad examples for each type
+  - Best practices and universal tips
+  - FAQ section addressing common questions
+  - Mobile-responsive design with clear navigation
+- ✓ **Navigation Enhancement**: Added Learn link to header with mobile support
 - ✓ Added "System Prompts" and "Few-Shot Learning" prompt types
 - ✓ Created specialized evaluation criteria for each prompt type:
   - Creative Writing: Creativity, Narrative Structure, Character Development, Emotional Resonance
@@ -43,6 +50,7 @@ AI-powered personal training tool for improving prompt engineering skills. Built
 - ✓ Updated AI evaluation system to use prompt-type-specific criteria
 - ✓ Created dynamic criteria display component that adapts labels based on prompt type
 - ✓ Added task scenarios for new prompt types (System and Few-Shot)
+- ✓ Fixed Progress component prop warning (indicatorClassName)
 - ✓ Removed deployment service references from codebase
 - ✓ Added custom task/context input feature to practice scenarios
 - ✓ Updated README to reflect current 3-LLM system

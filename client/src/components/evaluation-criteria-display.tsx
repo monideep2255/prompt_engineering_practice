@@ -53,8 +53,7 @@ export default function EvaluationCriteriaDisplay({ evaluationData, promptType }
           </div>
           <Progress 
             value={scores[index] * 10} 
-            className="h-2"
-            indicatorClassName={getProgressColor(scores[index])}
+            className={`h-2 ${getProgressColor(scores[index])}`}
           />
           <p className="text-xs text-gray-600 leading-relaxed">
             {evaluationData.feedback?.[feedbackKeys[index]]}
