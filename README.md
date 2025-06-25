@@ -95,11 +95,9 @@ Prompt engineering is rapidly becoming a key skill in leveraging AI effectively.
 ### AI Integration
 - **OpenAI GPT-4** - Advanced reasoning and analysis capabilities
 - **Anthropic Claude** - Expert evaluation with Claude Sonnet 4
-- **Google Gemini** - Google's flagship LLM for comprehensive analysis
-- **Grok** - xAI's conversational AI for unique perspectives
 - **DeepSeek** - High-performance cost-effective evaluation
 
-**Multi-Judge System**: Each of these 5 AI models can serve as both evaluator and judge, providing you with diverse analytical perspectives on your prompts.
+**Multi-Judge System**: Each of these 3 AI models can serve as both evaluator and judge, providing you with diverse analytical perspectives on your prompts.
 
 ### Development Tools
 - **Vite** for fast development and building
