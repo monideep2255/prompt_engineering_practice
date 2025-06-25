@@ -409,12 +409,12 @@ Analysis process:
   ];
 
   const promptTypes = [
-    { id: "creative-writing", label: "Creative Writing", icon: <Wand2 className="h-4 w-4" /> },
-    { id: "instructional", label: "Instructional", icon: <GraduationCap className="h-4 w-4" /> },
-    { id: "system", label: "System Prompts", icon: <Settings className="h-4 w-4" /> },
-    { id: "few-shot", label: "Few-Shot Learning", icon: <Target className="h-4 w-4" /> },
-    { id: "summarization", label: "Summarization", icon: <FileText className="h-4 w-4" /> },
-    { id: "analysis", label: "Analysis", icon: <BarChart3 className="h-4 w-4" /> }
+    { id: "creative-writing", label: "Creative", shortLabel: "Creative", icon: <Wand2 className="h-4 w-4" /> },
+    { id: "instructional", label: "Instructional", shortLabel: "Instruct", icon: <GraduationCap className="h-4 w-4" /> },
+    { id: "system", label: "System", shortLabel: "System", icon: <Settings className="h-4 w-4" /> },
+    { id: "few-shot", label: "Few-Shot", shortLabel: "Few-Shot", icon: <Target className="h-4 w-4" /> },
+    { id: "summarization", label: "Summary", shortLabel: "Summary", icon: <FileText className="h-4 w-4" /> },
+    { id: "analysis", label: "Analysis", shortLabel: "Analysis", icon: <BarChart3 className="h-4 w-4" /> }
   ];
 
   const handleCopyTemplate = (template: string) => {
@@ -457,14 +457,17 @@ Analysis process:
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="creative-writing" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 md:grid-cols-6 gap-1 h-auto p-1">
+          <TabsList className="grid w-full grid-cols-6 h-auto p-1">
             {promptTypes.map((type) => (
               <TabsTrigger 
                 key={type.id} 
                 value={type.id} 
-                className="text-xs px-1 py-2 h-auto min-h-[2.5rem] flex items-center justify-center whitespace-nowrap"
+                className="text-[10px] sm:text-xs px-0.5 sm:px-2 py-2 h-auto min-h-[2rem] flex items-center justify-center"
               >
-                <span className="leading-tight text-center">{type.label}</span>
+                <span className="leading-tight text-center break-words max-w-full">
+                  <span className="hidden sm:inline">{type.label}</span>
+                  <span className="sm:hidden">{type.shortLabel}</span>
+                </span>
               </TabsTrigger>
             ))}
           </TabsList>
