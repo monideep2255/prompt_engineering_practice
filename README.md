@@ -137,40 +137,20 @@ Prompt engineering is rapidly becoming a key skill in leveraging AI effectively.
 
 ## 🚀 Deployment
 
-### Netlify Deployment (Recommended)
-
-The application is configured for automatic deployment on Netlify with serverless functions.
-
-#### Setup Instructions:
-
-1. **Connect Repository**: Link your GitHub repository to Netlify
-
-2. **Build Settings**:
-   - Build command: `npm run build`
-   - Publish directory: `dist`
-
-3. **Environment Variables**: Add these in Netlify's dashboard:
-   ```
-   OPENAI_API_KEY=your_openai_key_here
-   ANTHROPIC_API_KEY=your_anthropic_key_here
-   DEEPSEEK_API_KEY=your_deepseek_key_here
-   ```
-
-4. **Deploy**: Push changes to your main branch for automatic deployment
-
-For detailed deployment instructions and troubleshooting, see [DEPLOYMENT.md](./DEPLOYMENT.md)
-
-### Alternative Deployment Options
-
-#### Replit Deployment
+### Replit Deploy (Recommended)
 1. Click the "Deploy" button in Replit
 2. Add environment variables in the Secrets tab
 3. Application available at your `.replit.app` domain
 
-#### Vercel Deployment
+### Vercel Deployment
 1. Connect repository to Vercel
 2. Add environment variables in project settings
 3. Deploy with automatic builds on push
+
+### Manual Deployment
+1. Build the project: `npm run build`
+2. Deploy the `dist` folder to any static hosting service
+3. Ensure environment variables are configured
 
 ## 🎯 How to Use
 
