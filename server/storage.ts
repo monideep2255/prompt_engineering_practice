@@ -100,24 +100,34 @@ export class MemStorage implements IStorage {
           context: "You have survey responses, support tickets, and social media mentions about a new product launch. Marketing needs key insights for the next campaign strategy."
         }
       ],
-      "data-analysis": [
+      "system": [
         {
-          task: "Analyze user behavior patterns from an e-commerce platform",
-          context: "The marketing team wants to understand why cart abandonment increased 15% last month. You have clickstream data, user demographics, and purchase history."
+          task: "Create a customer service AI assistant for an e-commerce platform",
+          context: "The assistant should handle order inquiries, returns, and basic troubleshooting. It needs to be professional but friendly, escalate complex issues to humans, and access order databases."
         },
         {
-          task: "Examine trends in employee satisfaction surveys",
-          context: "HR conducted quarterly surveys across 5 departments. They need insights on retention risk factors and recommendations for management action."
+          task: "Design a code review assistant for a development team",
+          context: "The AI should review Python code for best practices, security issues, and performance problems. It should provide constructive feedback and suggest specific improvements with examples."
         },
         {
-          task: "Review financial performance metrics for a SaaS startup",
-          context: "The board meeting is next week. They need analysis of customer acquisition cost, lifetime value, and churn rates compared to industry benchmarks."
+          task: "Build a content moderation system for a social media platform",
+          context: "The system needs to identify inappropriate content, hate speech, and spam while being culturally sensitive. It should explain decisions and allow for appeals process."
         }
       ],
-      "code-generation": [
+      "few-shot": [
         {
-          task: "Build a REST API endpoint for user authentication",
-          context: "You're working on a React Native app for a fitness startup. The backend uses Node.js and MongoDB. The endpoint needs JWT token handling and password hashing."
+          task: "Train an AI to write product descriptions for an outdoor gear retailer",
+          context: "You need to provide examples of compelling product descriptions that highlight features, benefits, and use cases. The tone should be adventurous but informative, targeting outdoor enthusiasts."
+        },
+        {
+          task: "Teach an AI to classify customer support tickets by urgency",
+          context: "Show examples of low, medium, and high priority tickets. Include billing issues, technical problems, and feature requests. The AI needs to understand context clues about urgency."
+        },
+        {
+          task: "Create examples for email subject line optimization",
+          context: "Provide examples of subject lines that improved open rates for a SaaS company. Include A/B test results and explain what elements make each subject line effective."
+        }
+      ]
         },
         {
           task: "Create a data visualization component",

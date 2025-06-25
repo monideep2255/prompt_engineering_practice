@@ -17,14 +17,16 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
+import EvaluationCriteriaDisplay from "./evaluation-criteria-display";
 
 interface EvaluationResultsProps {
   evaluationData: any;
   isEvaluating: boolean;
   onUseImprovedPrompt?: (prompt: string) => void;
+  promptType?: string;
 }
 
-export default function EvaluationResults({ evaluationData, isEvaluating, onUseImprovedPrompt }: EvaluationResultsProps) {
+export default function EvaluationResults({ evaluationData, isEvaluating, onUseImprovedPrompt, promptType = "analysis" }: EvaluationResultsProps) {
   const { toast } = useToast();
   const [exportFormat, setExportFormat] = useState("json");
 
@@ -240,99 +242,10 @@ export default function EvaluationResults({ evaluationData, isEvaluating, onUseI
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              {/* Clarity */}
-              <div className="border border-gray-200 rounded-lg p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center space-x-2">
-                    <Eye className="w-4 h-4 text-lab-blue" />
-                    <span className="font-medium text-gray-900">Clarity</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <span className={`text-lg font-semibold ${getScoreColor(evaluationData.clarityScore)}`}>
-                      {evaluationData.clarityScore}
-                    </span>
-                    <span className="text-sm text-lab-gray">/10</span>
-                  </div>
-                </div>
-                <p className="text-sm text-gray-600 mb-2">
-                  {evaluationData.feedback.clarity}
-                </p>
-                <Progress 
-                  value={evaluationData.clarityScore * 10} 
-                  className="h-1.5"
-                />
-              </div>
-
-              {/* Specificity */}
-              <div className="border border-gray-200 rounded-lg p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center space-x-2">
-                    <Crosshair className="w-4 h-4 text-lab-blue" />
-                    <span className="font-medium text-gray-900">Specificity</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <span className={`text-lg font-semibold ${getScoreColor(evaluationData.specificityScore)}`}>
-                      {evaluationData.specificityScore}
-                    </span>
-                    <span className="text-sm text-lab-gray">/10</span>
-                  </div>
-                </div>
-                <p className="text-sm text-gray-600 mb-2">
-                  {evaluationData.feedback.specificity}
-                </p>
-                <Progress 
-                  value={evaluationData.specificityScore * 10} 
-                  className="h-1.5"
-                />
-              </div>
-
-              {/* Task Alignment */}
-              <div className="border border-gray-200 rounded-lg p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center space-x-2">
-                    <Target className="w-4 h-4 text-lab-blue" />
-                    <span className="font-medium text-gray-900">Task Alignment</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <span className={`text-lg font-semibold ${getScoreColor(evaluationData.taskAlignmentScore)}`}>
-                      {evaluationData.taskAlignmentScore}
-                    </span>
-                    <span className="text-sm text-lab-gray">/10</span>
-                  </div>
-                </div>
-                <p className="text-sm text-gray-600 mb-2">
-                  {evaluationData.feedback.taskAlignment}
-                </p>
-                <Progress 
-                  value={evaluationData.taskAlignmentScore * 10} 
-                  className="h-1.5"
-                />
-              </div>
-
-              {/* Completeness */}
-              <div className="border border-gray-200 rounded-lg p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center space-x-2">
-                    <CheckCircle className="w-4 h-4 text-lab-blue" />
-                    <span className="font-medium text-gray-900">Completeness</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <span className={`text-lg font-semibold ${getScoreColor(evaluationData.completenessScore)}`}>
-                      {evaluationData.completenessScore}
-                    </span>
-                    <span className="text-sm text-lab-gray">/10</span>
-                  </div>
-                </div>
-                <p className="text-sm text-gray-600 mb-2">
-                  {evaluationData.feedback.completeness}
-                </p>
-                <Progress 
-                  value={evaluationData.completenessScore * 10} 
-                  className="h-1.5"
-                />
-              </div>
-            </div>
+            <EvaluationCriteriaDisplay 
+              evaluationData={evaluationData} 
+              promptType={promptType} 
+            />
           </CardContent>
         </Card>
 

@@ -44,6 +44,7 @@ interface PromptInputProps {
 export interface PromptInputRef {
   setPromptContent: (content: string) => void;
   clearForm: () => void;
+  getPromptType: () => string;
 }
 
 const PromptInput = forwardRef<PromptInputRef, PromptInputProps>(function PromptInput({ 

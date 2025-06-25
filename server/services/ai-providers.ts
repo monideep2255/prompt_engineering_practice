@@ -358,7 +358,7 @@ Please:
     const response = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: [
-        { role: "system", content: SYSTEM_PROMPT },
+        { role: "system", content: getSystemPrompt(promptType) },
         { role: "user", content: userPrompt }
       ],
       response_format: { type: "json_object" },
@@ -375,7 +375,7 @@ Please:
     const response = await anthropic.messages.create({
       model: 'claude-sonnet-4-20250514',
       max_tokens: 2000,
-      system: SYSTEM_PROMPT,
+      system: getSystemPrompt(promptType),
       messages: [{ role: 'user', content: userPrompt }],
       temperature: 0.3,
     });
@@ -432,7 +432,7 @@ Please:
     const response = await deepseekAI.chat.completions.create({
       model: "deepseek-chat",
       messages: [
-        { role: "system", content: SYSTEM_PROMPT },
+        { role: "system", content: getSystemPrompt(promptType) },
         { role: "user", content: userPrompt }
       ],
       temperature: 0.3,
