@@ -154,7 +154,7 @@ Now classify these tickets using the same format and reasoning:`,
             <div className="flex items-center space-x-3">
               <BookOpen className="h-8 w-8 text-blue-600" />
               <div>
-                <h1 className="text-3xl font-bold text-gray-900">Learn Prompt Engineering</h1>
+                <h1 className="font-bold text-gray-900 text-[20px]">Learn Prompt Engineering</h1>
                 <p className="text-gray-600 text-[14px]">Master the art of writing effective prompts for different AI tasks</p>
               </div>
             </div>
