@@ -45,6 +45,7 @@ export interface PromptInputRef {
   setPromptContent: (content: string) => void;
   clearForm: () => void;
   getPromptType: () => string;
+  setPromptType: (type: string) => void;
 }
 
 const PromptInput = forwardRef<PromptInputRef, PromptInputProps>(function PromptInput({ 
@@ -72,7 +73,10 @@ const PromptInput = forwardRef<PromptInputRef, PromptInputProps>(function Prompt
       setEvaluationProgress([]);
       setCurrentStep("");
     },
-    getPromptType: () => promptType
+    getPromptType: () => promptType,
+    setPromptType: (type: string) => {
+      setPromptType(type);
+    }
   }));
 
 

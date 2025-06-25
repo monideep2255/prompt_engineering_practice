@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { Link } from "wouter";
 import PromptInput, { PromptInputRef } from "@/components/prompt-input";
 import EvaluationResults from "@/components/evaluation-results";
+import TemplateLibrary from "@/components/template-library";
 
 export default function Home() {
   const [currentProvider, setCurrentProvider] = useState("OpenAI GPT-4");
@@ -30,6 +31,13 @@ export default function Home() {
     setIsEvaluating(false);
     if (promptInputRef.current) {
       promptInputRef.current.clearForm();
+    }
+  };
+
+  const handleUseTemplate = (template: string, promptType: string) => {
+    if (promptInputRef.current) {
+      promptInputRef.current.setPromptContent(template);
+      promptInputRef.current.setPromptType(promptType);
     }
   };
 
@@ -74,7 +82,7 @@ export default function Home() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 lg:gap-8">
           {/* Left Panel - Prompt Input */}
-          <div className="w-full">
+          <div className="w-full space-y-6">
             <PromptInput 
               onEvaluationComplete={handleEvaluationComplete}
               onEvaluationStart={handleEvaluationStart}
@@ -82,6 +90,9 @@ export default function Home() {
               setCurrentProvider={setCurrentProvider}
               ref={promptInputRef}
             />
+            
+            {/* Template Library */}
+            <TemplateLibrary onUseTemplate={handleUseTemplate} />
           </div>
 
           {/* Right Panel - Evaluation Results */}

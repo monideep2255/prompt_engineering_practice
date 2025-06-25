@@ -1,3 +1,4 @@
+import { Link } from "wouter";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -149,12 +150,20 @@ Now classify these tickets using the same format and reasoning:`,
       {/* Header */}
       <div className="bg-white border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex items-center space-x-3">
-            <BookOpen className="h-8 w-8 text-blue-600" />
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Learn Prompt Engineering</h1>
-              <p className="text-lg text-gray-600">Master the art of writing effective prompts for different AI tasks</p>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <BookOpen className="h-8 w-8 text-blue-600" />
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900">Learn Prompt Engineering</h1>
+                <p className="text-lg text-gray-600">Master the art of writing effective prompts for different AI tasks</p>
+              </div>
             </div>
+            <Link href="/">
+              <a className="flex items-center space-x-2 text-gray-600 hover:text-blue-600 transition-colors px-4 py-2 rounded-md border border-gray-300 hover:border-blue-300">
+                <Wand2 className="h-4 w-4" />
+                <span>Back to Practice</span>
+              </a>
+            </Link>
           </div>
         </div>
       </div>
