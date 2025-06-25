@@ -78,6 +78,7 @@ export default function Home() {
               evaluationData={evaluationData}
               isEvaluating={isEvaluating}
               onUseImprovedPrompt={handleUseImprovedPrompt}
+              promptType={promptInputRef.current?.getPromptType?.() || "analysis"}
             />
           </div>
         </div>

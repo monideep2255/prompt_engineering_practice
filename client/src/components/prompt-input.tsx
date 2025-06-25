@@ -71,7 +71,8 @@ const PromptInput = forwardRef<PromptInputRef, PromptInputProps>(function Prompt
       setPromptType("creative-writing");
       setEvaluationProgress([]);
       setCurrentStep("");
-    }
+    },
+    getPromptType: () => promptType
   }));
 
 

@@ -31,12 +31,21 @@ AI-powered personal training tool for improving prompt engineering skills. Built
 ## Recent Changes
 
 ### December 25, 2024
-- ✓ Removed all deployment service references from codebase
+- ✓ **Phase 2 Implementation Started**: Style-specific evaluation criteria system
+- ✓ Added "System Prompts" and "Few-Shot Learning" prompt types
+- ✓ Created specialized evaluation criteria for each prompt type:
+  - Creative Writing: Creativity, Narrative Structure, Character Development, Emotional Resonance
+  - Instructional: Clarity, Step-by-Step Flow, Actionability, Completeness
+  - System: Role Definition, Constraint Specification, Output Format, Behavioral Guidance
+  - Few-Shot: Example Quality, Pattern Clarity, Consistency, Learning Effectiveness
+  - Summarization: Compression Efficiency, Key Point Extraction, Audience Targeting, Structure Clarity
+  - Analysis: Analytical Depth, Framework Application, Evidence Integration, Insight Generation
+- ✓ Updated AI evaluation system to use prompt-type-specific criteria
+- ✓ Created dynamic criteria display component that adapts labels based on prompt type
+- ✓ Added task scenarios for new prompt types (System and Few-Shot)
+- ✓ Removed deployment service references from codebase
 - ✓ Added custom task/context input feature to practice scenarios
-- ✓ User can now toggle between random scenarios and custom input
-- ✓ Custom mode includes separate task and context text areas
-- ✓ Seamless switching between random and custom modes
-- ✓ Updated README to reflect current 3-LLM system (OpenAI, Anthropic, DeepSeek)
+- ✓ Updated README to reflect current 3-LLM system
 
 ### Previous Milestones
 - ✓ 2-LLM evaluation system implementation (reduced from 4-LLM for efficiency)

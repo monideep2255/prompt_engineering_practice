@@ -127,16 +127,6 @@ export class MemStorage implements IStorage {
           task: "Create examples for email subject line optimization",
           context: "Provide examples of subject lines that improved open rates for a SaaS company. Include A/B test results and explain what elements make each subject line effective."
         }
-      ]
-        },
-        {
-          task: "Create a data visualization component",
-          context: "The product team wants an interactive dashboard showing real-time server metrics. Using React and D3.js, it should handle live data updates and be mobile-responsive."
-        },
-        {
-          task: "Write a Python script for automated testing",
-          context: "The QA team needs to validate API responses across multiple environments. The script should handle authentication, test various endpoints, and generate detailed reports."
-        }
       ],
       "instructional": [
         {
