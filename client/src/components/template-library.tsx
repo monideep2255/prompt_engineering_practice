@@ -461,7 +461,7 @@ Analysis process:
             {promptTypes.map((type) => (
               <TabsTrigger key={type.id} value={type.id} className="flex items-center space-x-1">
                 {type.icon}
-                <span className="hidden sm:inline">{type.label}</span>
+                <span className="hidden sm:inline text-[12px]">{type.label}</span>
               </TabsTrigger>
             ))}
           </TabsList>
