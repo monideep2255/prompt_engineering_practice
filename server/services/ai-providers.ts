@@ -116,6 +116,7 @@ Respond in JSON format with this exact structure:
   "improvedPrompt": "improved version string",
   "improvements": ["improvement 1", "improvement 2", ...]
 }`;
+}
 
 export class AIProviderService {
   async evaluatePrompt(prompt: string, promptType: string, provider: string): Promise<EvaluationResponse> {
