@@ -457,10 +457,14 @@ Analysis process:
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="creative-writing" className="w-full">
-          <TabsList className="grid w-full grid-cols-6">
+          <TabsList className="grid w-full grid-cols-3 md:grid-cols-6 gap-1 h-auto p-1">
             {promptTypes.map((type) => (
-              <TabsTrigger key={type.id} value={type.id} className="text-xs">
-                {type.label}
+              <TabsTrigger 
+                key={type.id} 
+                value={type.id} 
+                className="text-xs px-1 py-2 h-auto min-h-[2.5rem] flex items-center justify-center whitespace-nowrap"
+              >
+                <span className="leading-tight text-center">{type.label}</span>
               </TabsTrigger>
             ))}
           </TabsList>
