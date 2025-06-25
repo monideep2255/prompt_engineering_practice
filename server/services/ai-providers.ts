@@ -26,18 +26,79 @@ const deepseekAI = new OpenAI({
 
 // const geminiAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY || "");
 
-const SYSTEM_PROMPT = `You are a Prompt Evaluation Agent specialized in analyzing and improving user prompts for AI interactions. Your task is to evaluate prompts across four key criteria and provide actionable improvement suggestions.
+// Style-specific evaluation criteria for different prompt types
+const EVALUATION_CRITERIA = {
+  "creative-writing": {
+    criteria: ["Creativity", "Narrative Structure", "Character Development", "Emotional Resonance"],
+    descriptions: [
+      "How original and imaginative is the prompt? Does it inspire unique creative output?",
+      "Does the prompt guide toward well-structured storytelling with clear narrative flow?", 
+      "Are characters well-defined with clear motivations and development potential?",
+      "Will the prompt generate emotionally engaging content that resonates with readers?"
+    ]
+  },
+  "instructional": {
+    criteria: ["Clarity", "Step-by-Step Flow", "Actionability", "Completeness"],
+    descriptions: [
+      "How clear and understandable are the instructions?",
+      "Does the prompt encourage logical, sequential instruction delivery?",
+      "Are the instructions practical and immediately actionable?",
+      "Does the prompt cover all necessary details and context?"
+    ]
+  },
+  "system": {
+    criteria: ["Role Definition", "Constraint Specification", "Output Format", "Behavioral Guidance"],
+    descriptions: [
+      "How clearly is the AI's role and expertise defined?",
+      "Are limitations, boundaries, and constraints explicitly specified?",
+      "Is the expected output format and structure clearly defined?",
+      "Does the prompt provide clear behavioral guidelines and interaction style?"
+    ]
+  },
+  "few-shot": {
+    criteria: ["Example Quality", "Pattern Clarity", "Consistency", "Learning Effectiveness"],
+    descriptions: [
+      "Are the provided examples high-quality and representative?",
+      "Do examples clearly demonstrate the desired pattern or approach?",
+      "Are examples consistent in format, style, and quality?",
+      "Will the examples effectively teach the AI the desired behavior?"
+    ]
+  },
+  "summarization": {
+    criteria: ["Compression Efficiency", "Key Point Extraction", "Audience Targeting", "Structure Clarity"],
+    descriptions: [
+      "Does the prompt guide effective information condensation without losing key insights?",
+      "Will the prompt help identify and prioritize the most important information?",
+      "Is the target audience and their information needs clearly specified?",
+      "Does the prompt specify clear organizational structure for the summary?"
+    ]
+  },
+  "analysis": {
+    criteria: ["Analytical Depth", "Framework Application", "Evidence Integration", "Insight Generation"],
+    descriptions: [
+      "Does the prompt encourage thorough, multi-layered analysis?",
+      "Are specific analytical frameworks or methodologies suggested?",
+      "Does the prompt guide effective use of evidence and data?",
+      "Will the prompt generate meaningful insights and actionable conclusions?"
+    ]
+  }
+};
 
-Evaluation Criteria:
-1. Clarity (1-10): How clear and understandable is the prompt?
-2. Specificity (1-10): How specific and detailed are the requirements?
-3. Task Alignment (1-10): How well does the prompt align with its intended purpose?
-4. Completeness (1-10): Does the prompt include all necessary context and constraints?
+function getSystemPrompt(promptType: string): string {
+  const criteria = EVALUATION_CRITERIA[promptType] || EVALUATION_CRITERIA["analysis"];
+  
+  return `You are a Prompt Evaluation Agent specialized in analyzing and improving user prompts for AI interactions. You are evaluating a ${promptType.replace('-', ' ')} prompt.
+
+For ${promptType.replace('-', ' ')} prompts, evaluate based on these specialized criteria:
+1. ${criteria.criteria[0]} (1-10): ${criteria.descriptions[0]}
+2. ${criteria.criteria[1]} (1-10): ${criteria.descriptions[1]}
+3. ${criteria.criteria[2]} (1-10): ${criteria.descriptions[2]}
+4. ${criteria.criteria[3]} (1-10): ${criteria.descriptions[3]}
 
 For each prompt evaluation, provide:
 - Individual scores for each criterion (1-10)
 - Brief explanations for each score (2-3 sentences)
-- An improved version of the prompt
+- An improved version of the prompt optimized for ${promptType.replace('-', ' ')} tasks
 - A list of specific improvements made
 
 Respond in JSON format with this exact structure:
@@ -129,11 +190,11 @@ Consider the prompt type context when scoring. Provide a thorough evaluation and
         
         switch (provider) {
           case 'anthropic':
-            response = await this.evaluateWithAnthropic(userPrompt);
+            response = await this.evaluateWithAnthropic(userPrompt, promptType);
             thinking = response.reasoning || `Analyzed prompt structure, clarity, and contextual appropriateness for ${promptType}`;
             break;
           case 'deepseek':
-            response = await this.evaluateWithDeepSeek(userPrompt);
+            response = await this.evaluateWithDeepSeek(userPrompt, promptType);
             thinking = `Evaluated technical precision, completeness, and logical flow for ${promptType} task`;
             break;
           // Commented out for future use:
@@ -293,7 +354,7 @@ Please:
     }
   }
 
-  private async evaluateWithOpenAI(userPrompt: string): Promise<Omit<EvaluationResponse, 'overallScore'>> {
+  private async evaluateWithOpenAI(userPrompt: string, promptType: string = 'analysis'): Promise<Omit<EvaluationResponse, 'overallScore'>> {
     const response = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: [
@@ -310,7 +371,7 @@ Please:
     return JSON.parse(content);
   }
 
-  private async evaluateWithAnthropic(userPrompt: string): Promise<Omit<EvaluationResponse, 'overallScore'>> {
+  private async evaluateWithAnthropic(userPrompt: string, promptType: string = 'analysis'): Promise<Omit<EvaluationResponse, 'overallScore'>> {
     const response = await anthropic.messages.create({
       model: 'claude-sonnet-4-20250514',
       max_tokens: 2000,
@@ -367,7 +428,7 @@ Please:
   //   return JSON.parse(content);
   // }
 
-  private async evaluateWithDeepSeek(userPrompt: string): Promise<Omit<EvaluationResponse, 'overallScore'>> {
+  private async evaluateWithDeepSeek(userPrompt: string, promptType: string = 'analysis'): Promise<Omit<EvaluationResponse, 'overallScore'>> {
     const response = await deepseekAI.chat.completions.create({
       model: "deepseek-chat",
       messages: [

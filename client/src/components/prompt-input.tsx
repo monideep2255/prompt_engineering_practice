@@ -19,9 +19,9 @@ import { Edit, Lightbulb, Trash2, Wand2 } from "lucide-react";
 const PROMPT_TYPES = [
   { label: "Creative Writing", value: "creative-writing" },
   { label: "Instructional", value: "instructional" }, 
+  { label: "System Prompts", value: "system" },
+  { label: "Few-Shot Learning", value: "few-shot" },
   { label: "Summarization", value: "summarization" },
-  { label: "Code Generation", value: "code-generation" },
-  { label: "Data Analysis", value: "data-analysis" },
   { label: "Analysis", value: "analysis" },
 ];
 

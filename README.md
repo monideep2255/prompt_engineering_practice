@@ -1,4 +1,4 @@
-*Last Updated: June 20, 2025*
+*Last Updated: June 24, 2025*
 
 # 🧠 Prompt Practice Lab
 
@@ -43,7 +43,6 @@ Prompt engineering is rapidly becoming a key skill in leveraging AI effectively.
   - **Logo Home Reset**: Click logo to reset to clean state and start fresh
   - **Progress Visualization**: Live feedback showing evaluation steps and AI decision-making process
 - **Fully Responsive Design**: Optimized interface that works seamlessly across mobile, tablet, and desktop devices
-- **Netlify Deployment**: Configured for automatic deployment with serverless functions and proper SPA routing
 
 ### 🔄 Phase 2: Prompt Types & Style Modes (UPCOMING)
 
@@ -161,7 +160,7 @@ The app offers two powerful evaluation modes:
 
 ### Multi-LLM Evaluation with AI Judge
 1. Write your prompt in the input field
-2. Select from 5 judge options:
+2. Select from 3 judge options:
    - "🏆 2 LLM Evaluation + OpenAI Judge"
    - "🧠 2 LLM Evaluation + Anthropic Judge"
    - "⚡ 2 LLM Evaluation + DeepSeek Judge"
