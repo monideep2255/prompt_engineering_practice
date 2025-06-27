@@ -1,4 +1,17 @@
-import { prompts, examplePrompts, type Prompt, type InsertPrompt, type ExamplePrompt, type InsertExamplePrompt } from "@shared/schema";
+import { 
+  prompts, 
+  examplePrompts, 
+  contentSources,
+  contentChunks,
+  type Prompt, 
+  type InsertPrompt, 
+  type ExamplePrompt, 
+  type InsertExamplePrompt,
+  type ContentSource,
+  type InsertContentSource,
+  type ContentChunk,
+  type InsertContentChunk
+} from "@shared/schema";
 
 export interface IStorage {
   // Example prompt operations only
@@ -6,6 +19,16 @@ export interface IStorage {
   getExamplePrompts(): Promise<ExamplePrompt[]>;
   // Task scenarios for prompt practice
   getRandomTaskScenario(promptType: string): Promise<{ task: string; context: string }>;
+  
+  // RAG Content Management
+  createContentSource(source: InsertContentSource): Promise<ContentSource>;
+  getContentSources(): Promise<ContentSource[]>;
+  getContentSourceById(id: number): Promise<ContentSource | undefined>;
+  deleteContentSource(id: number): Promise<void>;
+  
+  createContentChunk(chunk: InsertContentChunk): Promise<ContentChunk>;
+  getContentChunksBySource(sourceId: number): Promise<ContentChunk[]>;
+  searchContentChunks(query: string, promptType?: string): Promise<ContentChunk[]>;
 }
 
 export class MemStorage implements IStorage {
@@ -181,4 +204,104 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+// Database storage implementation for RAG system
+export class DatabaseStorage implements IStorage {
+  async createExamplePrompt(examplePrompt: InsertExamplePrompt): Promise<ExamplePrompt> {
+    const { db } = await import('./db');
+    const [created] = await db.insert(examplePrompts).values(examplePrompt).returning();
+    return created;
+  }
+
+  async getExamplePrompts(): Promise<ExamplePrompt[]> {
+    const { db } = await import('./db');
+    const { desc } = await import('drizzle-orm');
+    return await db.select().from(examplePrompts).orderBy(desc(examplePrompts.createdAt));
+  }
+
+  async getRandomTaskScenario(promptType: string): Promise<{ task: string; context: string }> {
+    // Keep using in-memory scenarios for now, but could be moved to DB later
+    const scenarios = memStorage.taskScenarios.get(promptType) || [];
+    if (scenarios.length === 0) {
+      return { task: "Create a practice prompt", context: "No specific context available" };
+    }
+    return scenarios[Math.floor(Math.random() * scenarios.length)];
+  }
+
+  // RAG Content Management
+  async createContentSource(source: InsertContentSource): Promise<ContentSource> {
+    const { db } = await import('./db');
+    const [created] = await db.insert(contentSources).values(source).returning();
+    return created;
+  }
+
+  async getContentSources(): Promise<ContentSource[]> {
+    const { db } = await import('./db');
+    const { desc, eq } = await import('drizzle-orm');
+    return await db
+      .select()
+      .from(contentSources)
+      .where(eq(contentSources.isActive, true))
+      .orderBy(desc(contentSources.uploadedAt));
+  }
+
+  async getContentSourceById(id: number): Promise<ContentSource | undefined> {
+    const { db } = await import('./db');
+    const { eq } = await import('drizzle-orm');
+    const [source] = await db
+      .select()
+      .from(contentSources)
+      .where(eq(contentSources.id, id));
+    return source;
+  }
+
+  async deleteContentSource(id: number): Promise<void> {
+    const { db } = await import('./db');
+    const { eq } = await import('drizzle-orm');
+    await db
+      .update(contentSources)
+      .set({ isActive: false })
+      .where(eq(contentSources.id, id));
+  }
+
+  async createContentChunk(chunk: InsertContentChunk): Promise<ContentChunk> {
+    const { db } = await import('./db');
+    const [created] = await db.insert(contentChunks).values(chunk).returning();
+    return created;
+  }
+
+  async getContentChunksBySource(sourceId: number): Promise<ContentChunk[]> {
+    const { db } = await import('./db');
+    const { eq } = await import('drizzle-orm');
+    return await db
+      .select()
+      .from(contentChunks)
+      .where(eq(contentChunks.sourceId, sourceId))
+      .orderBy(contentChunks.chunkIndex);
+  }
+
+  async searchContentChunks(query: string, promptType?: string): Promise<ContentChunk[]> {
+    const { db } = await import('./db');
+    const { ilike, and, arrayContains } = await import('drizzle-orm');
+    
+    let whereCondition = ilike(contentChunks.content, `%${query}%`);
+    
+    if (promptType) {
+      whereCondition = and(
+        whereCondition,
+        arrayContains(contentChunks.promptTypes, [promptType])
+      );
+    }
+    
+    return await db
+      .select()
+      .from(contentChunks)
+      .where(whereCondition)
+      .limit(10);
+  }
+}
+
+// Keep memory storage instance for fallback scenarios
+const memStorage = new MemStorage();
+
+// Use database storage for production
+export const storage = new DatabaseStorage();
