@@ -1,4 +1,4 @@
-*Last Updated: June 24, 2025*
+*Last Updated: June 27, 2025*
 
 # 🧠 Prompt Practice Lab
 
@@ -72,7 +72,9 @@ Prompt engineering is rapidly becoming a key skill in leveraging AI effectively.
   - Responsive template library with optimized tab layout
   - "Back to Practice" functionality from Learn page
 
-### ✅ Phase 3: RAG-Based Feedback Coach (COMPLETED - June 27, 2025)
+### [IN PROGRESS] Phase 3: RAG-Based Feedback Coach (IN PROGRESS - June 27, 2025)
+- Youtube URL still needs to be fixed
+- RAG expert opinion is that needed? Make the user flow clean for that, how does the user know they get feedback from the expert: another option directly?
 
 **Database Infrastructure:**
 - **✅ PostgreSQL Integration**: Full database backend with content storage and chunking system
