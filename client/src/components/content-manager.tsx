@@ -28,11 +28,19 @@ export default function ContentManager() {
 
   const { data: sources = [], isLoading } = useQuery({
     queryKey: ['/api/content/sources'],
-    queryFn: () => apiRequest('/api/content/sources'),
+    queryFn: async () => {
+      const response = await fetch('/api/content/sources');
+      if (!response.ok) throw new Error('Failed to fetch sources');
+      return response.json();
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: number) => apiRequest(`/api/content/sources/${id}`, { method: 'DELETE' }),
+    mutationFn: async (id: number) => {
+      const response = await fetch(`/api/content/sources/${id}`, { method: 'DELETE' });
+      if (!response.ok) throw new Error('Failed to delete source');
+      return response.json();
+    },
     onSuccess: () => {
       toast({
         title: "Content removed",

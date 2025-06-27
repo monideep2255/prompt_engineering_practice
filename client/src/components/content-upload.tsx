@@ -28,10 +28,15 @@ export default function ContentUpload({ onUploadComplete }: ContentUploadProps) 
 
   const fileUploadMutation = useMutation({
     mutationFn: async (data: FormData) => {
-      return await apiRequest("/api/content/upload", {
+      const response = await fetch("/api/content/upload", {
         method: "POST",
         body: data,
       });
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Upload failed');
+      }
+      return await response.json();
     },
     onSuccess: (data) => {
       toast({
@@ -53,11 +58,16 @@ export default function ContentUpload({ onUploadComplete }: ContentUploadProps) 
 
   const textUploadMutation = useMutation({
     mutationFn: async (data: any) => {
-      return await apiRequest("/api/content/text", {
+      const response = await fetch("/api/content/text", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Processing failed');
+      }
+      return await response.json();
     },
     onSuccess: (data) => {
       toast({

@@ -119,6 +119,15 @@ Respond in JSON format with this exact structure:
 }
 
 export class AIProviderService {
+  private openai: OpenAI;
+  private anthropic: Anthropic;
+  private deepseek: OpenAI;
+
+  constructor() {
+    this.openai = openai;
+    this.anthropic = anthropic;
+    this.deepseek = deepseekAI;
+  }
   async evaluatePrompt(prompt: string, promptType: string, provider: string): Promise<EvaluationResponse> {
     if (provider === 'all') {
       return await this.evaluateWithAllProviders(prompt, promptType);
