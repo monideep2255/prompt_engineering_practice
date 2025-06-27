@@ -547,7 +547,7 @@ Provide evaluation that references relevant expert insights when applicable.`;
     promptType: string, 
     systemPrompt: string
   ): Promise<EvaluationResponse> {
-    const response = await openai.chat.completions.create({
+    const response = await this.openai.chat.completions.create({
       model: "gpt-4o",
       messages: [
         { role: "system", content: systemPrompt },
@@ -585,7 +585,7 @@ Provide evaluation that references relevant expert insights when applicable.`;
     promptType: string, 
     systemPrompt: string
   ): Promise<EvaluationResponse> {
-    const response = await anthropic.messages.create({
+    const response = await this.anthropic.messages.create({
       model: "claude-sonnet-4-20250514",
       system: systemPrompt,
       messages: [{ role: "user", content: userPrompt }],
