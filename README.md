@@ -74,6 +74,7 @@ Prompt engineering is rapidly becoming a key skill in leveraging AI effectively.
 
 ### 📡 Phase 3: RAG-Based Feedback Coach (UPCOMING)
 
+- **NEW FEATURE ALERT**: Multi-modality: Voice mode, ElevenLabs integration?
 - **Content Integration**: Upload YouTube transcripts, podcast summaries, or documents
 - **Contextual Learning**: Personalized feedback based on your uploaded content
 - **Expert Knowledge Base**: Learn from industry experts and best practices
@@ -259,30 +260,6 @@ researcher:
     - Specified tone and emotional journey requirements
     - Added sensory description requirements for vivid storytelling
 ```
-
-## 📊 Evaluation Criteria
-
-Our AI evaluation system scores prompts across four key dimensions:
-
-### 1. Clarity (1-10)
-- **What it measures**: How clearly the prompt communicates its intent
-- **Good examples**: Specific language, clear structure, unambiguous instructions
-- **Common issues**: Vague language, confusing structure, unclear objectives
-
-### 2. Specificity (1-10)
-- **What it measures**: How detailed and precise the requirements are
-- **Good examples**: Specific output formats, clear constraints, detailed context
-- **Common issues**: Generic requests, missing details, vague requirements
-
-### 3. Task Alignment (1-10)
-- **What it measures**: How well the prompt aligns with its intended purpose
-- **Good examples**: Appropriate tone, relevant context, suitable complexity
-- **Common issues**: Mismatched tone, irrelevant information, inappropriate scope
-
-### 4. Completeness (1-10)
-- **What it measures**: Whether all necessary context and constraints are included
-- **Good examples**: Complete context, all constraints specified, clear success criteria
-- **Common issues**: Missing context, undefined constraints, unclear success metrics
 
 ## 🎓 Learning Approach
 
