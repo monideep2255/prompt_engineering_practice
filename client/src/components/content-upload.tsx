@@ -18,6 +18,7 @@ interface ContentUploadProps {
 export default function ContentUpload({ onUploadComplete }: ContentUploadProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [textContent, setTextContent] = useState("");
+  const [youtubeUrl, setYoutubeUrl] = useState("");
   const [title, setTitle] = useState("");
   const [expertName, setExpertName] = useState("custom");
   const [sourceType, setSourceType] = useState("document");

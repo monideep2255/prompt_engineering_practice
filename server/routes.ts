@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { aiProviderService } from "./services/ai-providers";
 import { contentProcessor } from "./services/content-processor";
+import { youtubeProcessor } from "./services/youtube-processor";
 import { evaluationResponseSchema, insertContentSourceSchema } from "@shared/schema";
 import { z } from "zod";
 import multer from "multer";
@@ -30,6 +31,44 @@ const evaluatePromptSchema = z.object({
 });
 
 export function registerRoutes(app: Express): void {
+  // YouTube URL processing route
+  app.post("/api/content/youtube", async (req, res) => {
+    try {
+      const { url, expertName, sourceType } = req.body;
+      
+      if (!url || !sourceType) {
+        return res.status(400).json({ message: 'YouTube URL and source type are required' });
+      }
+
+      if (!youtubeProcessor.isYouTubeUrl(url)) {
+        return res.status(400).json({ message: 'Invalid YouTube URL format' });
+      }
+
+      // Extract transcript from YouTube URL
+      const { title, content } = await youtubeProcessor.extractTranscriptFromUrl(url);
+
+      // Process the extracted content
+      const result = await contentProcessor.processTextContent(
+        title,
+        content,
+        sourceType,
+        expertName || 'YouTube Creator',
+        url
+      );
+
+      res.json({
+        message: 'YouTube content processed successfully',
+        source: result.source,
+        totalChunks: result.totalChunks
+      });
+    } catch (error) {
+      console.error('Error processing YouTube content:', error);
+      res.status(500).json({ 
+        message: error instanceof Error ? error.message : 'Failed to process YouTube content'
+      });
+    }
+  });
+
   // Get example prompts
   app.get("/api/example-prompts", async (req, res) => {
     try {
