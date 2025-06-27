@@ -75,6 +75,7 @@ Prompt engineering is rapidly becoming a key skill in leveraging AI effectively.
 ### [IN PROGRESS] Phase 3: RAG-Based Feedback Coach (IN PROGRESS - June 27, 2025)
 - Youtube URL still needs to be fixed
 - RAG expert opinion is that needed? Make the user flow clean for that, how does the user know they get feedback from the expert: another option directly?
+- Do we really need multi-modality?
 
 **Database Infrastructure:**
 - **✅ PostgreSQL Integration**: Full database backend with content storage and chunking system
