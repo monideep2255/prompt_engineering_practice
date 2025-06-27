@@ -59,10 +59,16 @@ export class ContentProcessorService {
     };
   }
 
-  // Split text into manageable chunks
+  // Split text into manageable chunks and clean for database storage
   private splitIntoChunks(text: string, maxChars: number): string[] {
+    // Clean text to remove null bytes and invalid characters
+    const cleanText = text
+      .replace(/\0/g, '') // Remove null bytes
+      .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '') // Remove control characters except \t, \n, \r
+      .trim();
+    
     const chunks: string[] = [];
-    const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+    const sentences = cleanText.split(/[.!?]+/).filter(s => s.trim().length > 0);
     
     let currentChunk = '';
     
@@ -72,7 +78,7 @@ export class ContentProcessorService {
       
       // If adding this sentence would exceed max chars, start new chunk
       if (currentChunk.length + trimmedSentence.length > maxChars && currentChunk.length > 0) {
-        chunks.push(currentChunk.trim());
+        chunks.push(this.cleanChunkForDatabase(currentChunk.trim()));
         currentChunk = trimmedSentence + '.';
       } else {
         currentChunk += (currentChunk.length > 0 ? ' ' : '') + trimmedSentence + '.';
@@ -81,10 +87,19 @@ export class ContentProcessorService {
     
     // Add final chunk if it has content
     if (currentChunk.trim().length > 0) {
-      chunks.push(currentChunk.trim());
+      chunks.push(this.cleanChunkForDatabase(currentChunk.trim()));
     }
     
-    return chunks.length > 0 ? chunks : [text]; // Fallback to original text if splitting fails
+    return chunks.length > 0 ? chunks : [this.cleanChunkForDatabase(cleanText)];
+  }
+
+  // Clean chunk content for safe database storage
+  private cleanChunkForDatabase(chunk: string): string {
+    return chunk
+      .replace(/\0/g, '') // Remove null bytes
+      .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, ' ') // Replace control characters with spaces
+      .replace(/\s+/g, ' ') // Normalize whitespace
+      .trim();
   }
 
   // Analyze chunk content to extract topics and relevant prompt types

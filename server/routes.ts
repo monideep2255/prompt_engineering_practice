@@ -102,8 +102,19 @@ export function registerRoutes(app: Express): void {
         return res.status(400).json({ message: 'Title and source type are required' });
       }
 
-      // Convert buffer to text
-      const content = req.file.buffer.toString('utf-8');
+      // Convert buffer to text with proper encoding handling
+      let content: string;
+      try {
+        content = req.file.buffer.toString('utf-8');
+        // Clean content to remove problematic characters
+        content = content
+          .replace(/\0/g, '') // Remove null bytes
+          .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, ' ') // Replace control characters with spaces
+          .replace(/\s+/g, ' ') // Normalize whitespace
+          .trim();
+      } catch (error) {
+        return res.status(400).json({ message: 'File encoding not supported. Please use UTF-8 encoded text files.' });
+      }
       
       if (content.length < 100) {
         return res.status(400).json({ message: 'File content too short (minimum 100 characters)' });
@@ -139,13 +150,20 @@ export function registerRoutes(app: Express): void {
         return res.status(400).json({ message: 'Title, content, and source type are required' });
       }
 
-      if (content.length < 100) {
+      // Clean content to remove problematic characters
+      const cleanContent = content
+        .replace(/\0/g, '') // Remove null bytes
+        .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, ' ') // Replace control characters with spaces
+        .replace(/\s+/g, ' ') // Normalize whitespace
+        .trim();
+
+      if (cleanContent.length < 100) {
         return res.status(400).json({ message: 'Content too short (minimum 100 characters)' });
       }
 
       const result = await contentProcessor.processTextContent(
         title,
-        content,
+        cleanContent,
         sourceType,
         expertName,
         originalUrl
