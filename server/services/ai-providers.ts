@@ -497,6 +497,128 @@ Please:
   //     throw new Error("Could not parse JSON response from Google Gemini");
   //   }
   // }
+
+  // Enhanced evaluation with RAG context
+  async evaluatePromptWithRAG(
+    prompt: string, 
+    promptType: string, 
+    provider: string,
+    relevantChunks: any[]
+  ): Promise<EvaluationResponse> {
+    // Build expert context from relevant chunks
+    const expertContext = relevantChunks.map(chunk => ({
+      content: chunk.content,
+      topics: chunk.keyTopics,
+      source: chunk.source?.expertName || 'expert'
+    }));
+
+    const contextSummary = expertContext.map(ctx => 
+      `Expert insight (${ctx.source}): ${ctx.content.substring(0, 200)}...`
+    ).join('\n\n');
+
+    // Use enhanced system prompt with expert context
+    const enhancedSystemPrompt = `${getSystemPrompt(promptType)}
+
+EXPERT CONTEXT AVAILABLE:
+You have access to expert insights relevant to this prompt evaluation. Use this context to provide more informed, expert-level feedback.
+
+${contextSummary}
+
+When evaluating, consider:
+1. How well the prompt aligns with expert best practices shown in the context
+2. Whether the prompt incorporates techniques or approaches mentioned by experts
+3. Areas where expert insights suggest improvements
+4. How the prompt could be enhanced based on expert methodologies
+
+Provide evaluation that references relevant expert insights when applicable.`;
+
+    if (provider === 'all-openai' || provider === 'openai') {
+      return await this.evaluateWithOpenAIRAG(prompt, promptType, enhancedSystemPrompt);
+    } else if (provider === 'all-anthropic' || provider === 'anthropic') {
+      return await this.evaluateWithAnthropicRAG(prompt, promptType, enhancedSystemPrompt);
+    } else {
+      // Fallback to standard evaluation
+      return await this.evaluatePrompt(prompt, promptType, provider);
+    }
+  }
+
+  private async evaluateWithOpenAIRAG(
+    userPrompt: string, 
+    promptType: string, 
+    systemPrompt: string
+  ): Promise<EvaluationResponse> {
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o",
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt }
+      ],
+      response_format: { type: "json_object" },
+      temperature: 0.7,
+      max_tokens: 2000,
+    });
+
+    const evaluation = JSON.parse(response.choices[0].message.content || '{}');
+    
+    // Normalize the response to match our schema
+    return {
+      overallScore: Math.round(evaluation.overallScore || evaluation.score || 7),
+      clarityScore: Math.round(evaluation.clarityScore || evaluation.clarity || 7),
+      specificityScore: Math.round(evaluation.specificityScore || evaluation.specificity || 7),
+      taskAlignmentScore: Math.round(evaluation.taskAlignmentScore || evaluation.taskAlignment || 7),
+      completenessScore: Math.round(evaluation.completenessScore || evaluation.completeness || 7),
+      feedback: {
+        clarity: evaluation.feedback?.clarity || evaluation.clarityFeedback || "Clear communication with expert insights applied.",
+        specificity: evaluation.feedback?.specificity || evaluation.specificityFeedback || "Good level of detail enhanced by expert knowledge.",
+        taskAlignment: evaluation.feedback?.taskAlignment || evaluation.taskAlignmentFeedback || "Well-aligned with expert best practices.",
+        completeness: evaluation.feedback?.completeness || evaluation.completenessFeedback || "Comprehensive approach informed by expert guidance."
+      },
+      improvedPrompt: evaluation.improvedPrompt || evaluation.improved_prompt || userPrompt,
+      improvements: Array.isArray(evaluation.improvements) ? evaluation.improvements : 
+                   Array.isArray(evaluation.suggested_improvements) ? evaluation.suggested_improvements :
+                   ["Enhanced with expert insights", "Improved based on best practices"]
+    };
+  }
+
+  private async evaluateWithAnthropicRAG(
+    userPrompt: string, 
+    promptType: string, 
+    systemPrompt: string
+  ): Promise<EvaluationResponse> {
+    const response = await anthropic.messages.create({
+      model: "claude-sonnet-4-20250514",
+      system: systemPrompt,
+      messages: [{ role: "user", content: userPrompt }],
+      max_tokens: 2000,
+      temperature: 0.7,
+    });
+
+    const content = response.content[0];
+    if (content.type === 'text') {
+      const evaluation = JSON.parse(content.text);
+      
+      // Normalize the response to match our schema
+      return {
+        overallScore: Math.round(evaluation.overallScore || evaluation.score || 7),
+        clarityScore: Math.round(evaluation.clarityScore || evaluation.clarity || 7),
+        specificityScore: Math.round(evaluation.specificityScore || evaluation.specificity || 7),
+        taskAlignmentScore: Math.round(evaluation.taskAlignmentScore || evaluation.taskAlignment || 7),
+        completenessScore: Math.round(evaluation.completenessScore || evaluation.completeness || 7),
+        feedback: {
+          clarity: evaluation.feedback?.clarity || evaluation.clarityFeedback || "Clear communication with expert insights applied.",
+          specificity: evaluation.feedback?.specificity || evaluation.specificityFeedback || "Good level of detail enhanced by expert knowledge.",
+          taskAlignment: evaluation.feedback?.taskAlignment || evaluation.taskAlignmentFeedback || "Well-aligned with expert best practices.",
+          completeness: evaluation.feedback?.completeness || evaluation.completenessFeedback || "Comprehensive approach informed by expert guidance."
+        },
+        improvedPrompt: evaluation.improvedPrompt || evaluation.improved_prompt || userPrompt,
+        improvements: Array.isArray(evaluation.improvements) ? evaluation.improvements : 
+                     Array.isArray(evaluation.suggested_improvements) ? evaluation.suggested_improvements :
+                     ["Enhanced with expert insights", "Improved based on best practices"]
+      };
+    }
+    
+    throw new Error('Invalid response format from Anthropic');
+  }
 }
 
 export const aiProviderService = new AIProviderService();

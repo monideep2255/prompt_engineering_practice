@@ -220,11 +220,7 @@ export class DatabaseStorage implements IStorage {
 
   async getRandomTaskScenario(promptType: string): Promise<{ task: string; context: string }> {
     // Keep using in-memory scenarios for now, but could be moved to DB later
-    const scenarios = memStorage.taskScenarios.get(promptType) || [];
-    if (scenarios.length === 0) {
-      return { task: "Create a practice prompt", context: "No specific context available" };
-    }
-    return scenarios[Math.floor(Math.random() * scenarios.length)];
+    return memStorage.getRandomTaskScenario(promptType);
   }
 
   // RAG Content Management
@@ -286,10 +282,8 @@ export class DatabaseStorage implements IStorage {
     let whereCondition = ilike(contentChunks.content, `%${query}%`);
     
     if (promptType) {
-      whereCondition = and(
-        whereCondition,
-        arrayContains(contentChunks.promptTypes, [promptType])
-      );
+      const typeCondition = arrayContains(contentChunks.promptTypes, [promptType]);
+      whereCondition = and(whereCondition, typeCondition) || whereCondition;
     }
     
     return await db
