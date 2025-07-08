@@ -102,7 +102,14 @@ const PromptInput = forwardRef<PromptInputRef, PromptInputProps>(function Prompt
         const delays = [1200, 1400, 1800]; // Realistic timing for 2 LLM + judge
         for (let i = 0; i < steps.length; i++) {
           setCurrentStep(steps[i]);
-          setEvaluationProgress(prev => [...prev, steps[i]]);
+          // Add each step to the progress array properly
+          setEvaluationProgress(prev => {
+            // Avoid duplicates by checking if the step already exists
+            if (prev.includes(steps[i])) {
+              return prev;
+            }
+            return [...prev, steps[i]];
+          });
           await new Promise(resolve => setTimeout(resolve, delays[i]));
         }
       }
