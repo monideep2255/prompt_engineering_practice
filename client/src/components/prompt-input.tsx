@@ -165,6 +165,10 @@ const PromptInput = forwardRef<PromptInputRef, PromptInputProps>(function Prompt
     } else {
       setPromptContent(transcription);
     }
+    toast({
+      title: "Voice input added",
+      description: "Your speech has been added to the prompt.",
+    });
   };
 
 

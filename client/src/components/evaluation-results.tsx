@@ -155,6 +155,30 @@ export default function EvaluationResults({ evaluationData, isEvaluating, onUseI
   if (evaluationData) {
     return (
       <div className="space-y-6">
+        {/* Expert Advice Banner */}
+        {hasExpertAdvice && (
+          <Card className="border-green-200 bg-green-50">
+            <CardContent className="pt-6">
+              <div className="flex items-center space-x-3">
+                <div className="flex-shrink-0">
+                  <CheckCircle className="h-6 w-6 text-green-600" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-green-800">
+                    Expert Advice Included
+                  </h3>
+                  <p className="text-sm text-green-700">
+                    This evaluation includes insights from: {evaluationData.expertSources.join(", ")}
+                  </p>
+                  <p className="text-xs text-green-600 mt-1">
+                    Your prompt was enhanced with expert knowledge from your uploaded content
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Evaluation Progress */}
         {evaluationData.allEvaluations && (
           <Card>

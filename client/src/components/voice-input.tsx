@@ -144,9 +144,11 @@ export default function VoiceInput({ onTranscription, isEnabled = true }: VoiceI
               <span className="text-sm font-medium text-blue-800">Listening...</span>
             </div>
             {transcript && (
-              <p className="text-sm text-blue-700 italic">
-                "{transcript}"
-              </p>
+              <div className="mt-2 p-2 bg-white/50 rounded border">
+                <p className="text-sm text-blue-700 italic break-words whitespace-pre-wrap">
+                  "{transcript}"
+                </p>
+              </div>
             )}
           </CardContent>
         </Card>
@@ -159,9 +161,18 @@ export default function VoiceInput({ onTranscription, isEnabled = true }: VoiceI
               <Volume2 className="w-4 h-4 text-green-600" />
               <span className="text-sm font-medium text-green-800">Transcribed:</span>
             </div>
-            <p className="text-sm text-green-700">
-              "{transcript}"
-            </p>
+            <div className="mt-2 p-2 bg-white/50 rounded border">
+              <p className="text-sm text-green-700 break-words whitespace-pre-wrap">
+                "{transcript}"
+              </p>
+            </div>
+            <Button 
+              onClick={() => onTranscription(transcript)}
+              className="mt-3 w-full"
+              size="sm"
+            >
+              Add to Prompt
+            </Button>
           </CardContent>
         </Card>
       )}
