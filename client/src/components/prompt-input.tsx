@@ -14,7 +14,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import TaskScenario from "./task-scenario";
-import { Edit, Lightbulb, Trash2, Wand2 } from "lucide-react";
+import VoiceInput from "./voice-input";
+import { Edit, Lightbulb, Trash2, Wand2, Mic } from "lucide-react";
 
 const PROMPT_TYPES = [
   { label: "Creative Writing", value: "creative-writing" },
@@ -157,6 +158,15 @@ const PromptInput = forwardRef<PromptInputRef, PromptInputProps>(function Prompt
     setPromptContent("");
   };
 
+  const handleVoiceTranscription = (transcription: string) => {
+    // Append voice input to existing content or replace if empty
+    if (promptContent.trim()) {
+      setPromptContent(promptContent + " " + transcription);
+    } else {
+      setPromptContent(transcription);
+    }
+  };
+
 
 
   const handleProviderChange = (value: string) => {
@@ -240,6 +250,14 @@ const PromptInput = forwardRef<PromptInputRef, PromptInputProps>(function Prompt
                 Clear
               </Button>
             </div>
+          </div>
+
+          {/* Voice Input Component */}
+          <div className="border-t pt-4">
+            <VoiceInput 
+              onTranscription={handleVoiceTranscription} 
+              isEnabled={!evaluateMutation.isPending}
+            />
           </div>
 
           {/* Progress Display */}

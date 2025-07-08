@@ -30,6 +30,9 @@ export default function EvaluationResults({ evaluationData, isEvaluating, onUseI
   const { toast } = useToast();
   const [exportFormat, setExportFormat] = useState("json");
 
+  // Check if expert advice was included in the evaluation
+  const hasExpertAdvice = evaluationData?.expertSources && evaluationData.expertSources.length > 0;
+
   const handleCopyImprovedPrompt = () => {
     if (evaluationData?.improvedPrompt) {
       navigator.clipboard.writeText(evaluationData.improvedPrompt);
@@ -182,6 +185,21 @@ export default function EvaluationResults({ evaluationData, isEvaluating, onUseI
                     </div>
                   ))}
                 </div>
+
+                {/* Expert Advice Indicator */}
+                {hasExpertAdvice && (
+                  <div className="border-t pt-4">
+                    <h4 className="text-sm font-medium text-gray-700 mb-2">Expert Context Used:</h4>
+                    <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                      <div className="flex items-center space-x-2">
+                        <Lightbulb className="w-4 h-4 text-green-600" />
+                        <p className="text-xs text-green-800">
+                          Enhanced with insights from {evaluationData.expertSources.length} expert source(s): {evaluationData.expertSources.map((s: any) => s.expertName).join(', ')}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 {/* Judge Decision */}
                 {evaluationData.judgeThinking && (

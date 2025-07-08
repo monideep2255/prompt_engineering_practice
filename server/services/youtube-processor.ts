@@ -10,8 +10,27 @@ export class YouTubeProcessorService {
         throw new Error('Invalid YouTube URL format');
       }
 
-      // Get transcript
-      const transcript = await YoutubeTranscript.fetchTranscript(videoId);
+      // Get transcript with better error handling
+      let transcript;
+      try {
+        transcript = await YoutubeTranscript.fetchTranscript(videoId);
+      } catch (transcriptError) {
+        // Try alternative approach or provide more helpful error
+        if (transcriptError instanceof Error) {
+          if (transcriptError.message.includes('Transcript is disabled')) {
+            throw new Error('Video transcript is disabled by the creator');
+          } else if (transcriptError.message.includes('Video unavailable')) {
+            throw new Error('Video is unavailable or private');
+          } else if (transcriptError.message.includes('No transcript')) {
+            throw new Error('No transcript available for this video');
+          }
+        }
+        throw new Error('Unable to fetch transcript. Video may be private, age-restricted, or have no transcript available');
+      }
+
+      if (!transcript || transcript.length === 0) {
+        throw new Error('No transcript data available for this video');
+      }
       
       // Combine transcript text
       const content = transcript
@@ -20,8 +39,8 @@ export class YouTubeProcessorService {
         .replace(/\s+/g, ' ')
         .trim();
 
-      if (content.length < 100) {
-        throw new Error('Transcript too short or unavailable');
+      if (content.length < 50) {
+        throw new Error('Transcript content is too short to process (minimum 50 characters)');
       }
 
       // Generate title from URL or use video ID
@@ -36,7 +55,7 @@ export class YouTubeProcessorService {
       console.error('YouTube transcript extraction error:', error);
       throw new Error(
         error instanceof Error 
-          ? `Failed to extract transcript: ${error.message}` 
+          ? error.message
           : 'Failed to extract YouTube transcript'
       );
     }
