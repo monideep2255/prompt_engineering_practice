@@ -18,7 +18,7 @@ interface ContentUploadProps {
 export default function ContentUpload({ onUploadComplete }: ContentUploadProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [textContent, setTextContent] = useState("");
-  const [youtubeUrl, setYoutubeUrl] = useState("");
+
   const [title, setTitle] = useState("");
   const [expertName, setExpertName] = useState("custom");
   const [sourceType, setSourceType] = useState("document");
@@ -88,41 +88,11 @@ export default function ContentUpload({ onUploadComplete }: ContentUploadProps) 
     },
   });
 
-  const youtubeUploadMutation = useMutation({
-    mutationFn: async (data: any) => {
-      const response = await fetch("/api/content/youtube", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'YouTube processing failed');
-      }
-      return await response.json();
-    },
-    onSuccess: (data) => {
-      toast({
-        title: "YouTube content processed successfully",
-        description: `Processed ${data.totalChunks} content chunks`,
-      });
-      queryClient.invalidateQueries({ queryKey: ['/api/content/sources'] });
-      resetForm();
-      onUploadComplete?.();
-    },
-    onError: (error) => {
-      toast({
-        title: "YouTube processing failed",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
+
 
   const resetForm = () => {
     setSelectedFile(null);
     setTextContent("");
-    setYoutubeUrl("");
     setTitle("");
     setExpertName("custom");
     setSourceType("document");
@@ -177,35 +147,9 @@ export default function ContentUpload({ onUploadComplete }: ContentUploadProps) 
     });
   };
 
-  const handleYouTubeUpload = () => {
-    if (!youtubeUrl.trim() || !sourceType) {
-      toast({
-        title: "Missing information",
-        description: "Please provide a YouTube URL and choose a source type",
-        variant: "destructive",
-      });
-      return;
-    }
 
-    // Basic YouTube URL validation
-    const youtubePattern = /^https?:\/\/(www\.)?(youtube\.com|youtu\.be)/;
-    if (!youtubePattern.test(youtubeUrl)) {
-      toast({
-        title: "Invalid URL",
-        description: "Please provide a valid YouTube URL",
-        variant: "destructive",
-      });
-      return;
-    }
 
-    youtubeUploadMutation.mutate({
-      url: youtubeUrl,
-      expertName: expertName === "custom" ? "YouTube Creator" : expertName,
-      sourceType,
-    });
-  };
-
-  const isUploading = fileUploadMutation.isPending || textUploadMutation.isPending || youtubeUploadMutation.isPending;
+  const isUploading = fileUploadMutation.isPending || textUploadMutation.isPending;
 
   return (
     <Card>
@@ -220,7 +164,7 @@ export default function ContentUpload({ onUploadComplete }: ContentUploadProps) 
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="file" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="file" className="flex items-center space-x-2">
               <FileText className="h-4 w-4" />
               <span>Upload File</span>
@@ -228,12 +172,6 @@ export default function ContentUpload({ onUploadComplete }: ContentUploadProps) 
             <TabsTrigger value="text" className="flex items-center space-x-2">
               <Link2 className="h-4 w-4" />
               <span>Paste Text</span>
-            </TabsTrigger>
-            <TabsTrigger value="youtube" className="flex items-center space-x-2">
-              <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-              </svg>
-              <span>YouTube URL</span>
             </TabsTrigger>
           </TabsList>
 
@@ -359,36 +297,7 @@ export default function ContentUpload({ onUploadComplete }: ContentUploadProps) 
             </Button>
           </TabsContent>
 
-          {/* YouTube URL Tab */}
-          <TabsContent value="youtube" className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="youtube-url">YouTube URL *</Label>
-              <Input
-                id="youtube-url"
-                placeholder="https://www.youtube.com/watch?v=..."
-                value={youtubeUrl}
-                onChange={(e) => setYoutubeUrl(e.target.value)}
-              />
-              <p className="text-sm text-gray-500">
-                Enter a YouTube video URL. The system will automatically extract the transcript.
-              </p>
-            </div>
 
-            <Button
-              onClick={handleYouTubeUpload}
-              disabled={isUploading || !youtubeUrl.trim() || !sourceType}
-              className="w-full"
-            >
-              {isUploading ? (
-                "Processing YouTube Content..."
-              ) : (
-                <>
-                  <CheckCircle className="h-4 w-4 mr-2" />
-                  Extract & Process YouTube Content
-                </>
-              )}
-            </Button>
-          </TabsContent>
         </Tabs>
       </CardContent>
     </Card>

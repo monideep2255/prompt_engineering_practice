@@ -3,7 +3,7 @@
 ## Overview
 AI-powered personal training tool for improving prompt engineering skills. Built with React + Express + TypeScript, focusing on practical skill development through real-world scenarios and AI-powered feedback.
 
-**Current Status**: Phase 3 RAG-Based Feedback Coach Complete - Expert content integration with enhanced evaluation system
+**Current Status**: Phase 3 RAG-Based Feedback Coach Complete - Expert content integration with enhanced evaluation system and voice input functionality
 
 ## User Preferences
 - Remove all deployment service references when requested
